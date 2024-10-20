@@ -50,11 +50,13 @@ const Advanced: React.FC = () => {
       (model) => model.show_name === selectedStyle
     );
     setIsLoad("loading"); // 設置為loading狀態
+    const formattedRelationship = formatRelationships();
     const data = {
       style: targetModel?.sd_name || "fantasyWorld_v10.safetensors",
       mainCharacter: character1,
       description,
       otherCharacters: characters.filter((character) => character !== ""),
+      relationships: formattedRelationship,
     };
 
     console.log(`RoleForm = ${JSON.stringify(data)}`);
@@ -119,6 +121,16 @@ const Advanced: React.FC = () => {
     const newRelationships = [...relationships];
     newRelationships[index] = { ...newRelationships[index], [field]: value };
     setRelationships(newRelationships);
+  };
+
+  const formatRelationships = () => {
+    return relationships
+    .filter(rel => rel.characterA && rel.characterB && rel.relation) 
+    .map(rel => ({
+      role1: rel.characterA,
+      role2: rel.characterB,
+      role12Relative: rel.relation
+    }));
   };
 
   return (
@@ -286,7 +298,7 @@ const Advanced: React.FC = () => {
                         <div key={index} className="relationship-setting d-flex flex-wrap align-items-center mb-2">
                           <div className="me-2 mb-2 mb-md-0">
                             <select
-                              className="form-select form-select-sm"
+                              className="form-select form-select-sm fixed-width-select truncate-text"
                               value={rel.characterA}
                               onChange={(e) => updateRelationship(index, 'characterA', e.target.value)}
                             >
@@ -299,7 +311,7 @@ const Advanced: React.FC = () => {
                           <div className="me-2 mb-2 mb-md-0">與</div>
                           <div className="me-2 mb-2 mb-md-0">
                             <select
-                              className="form-select form-select-sm"
+                              className="form-select form-select-sm fixed-width-select truncate-text"
                               value={rel.characterB}
                               onChange={(e) => updateRelationship(index, 'characterB', e.target.value)}
                             >
@@ -312,7 +324,7 @@ const Advanced: React.FC = () => {
                           <div className="me-2 mb-2 mb-md-0">的關係為</div>
                           <div className="d-flex align-items-center mb-2 mb-md-0">
                             <select
-                              className={`form-select form-select-sm ${index === 0 ? 'relation-select-first' : ''}`}
+                              className={`form-select form-select-sm fixed-width-select truncate-text ${index === 0 ? 'relation-select-first' : ''}`}
                               value={rel.relation}
                               onChange={(e) => updateRelationship(index, 'relation', e.target.value)}
                             >

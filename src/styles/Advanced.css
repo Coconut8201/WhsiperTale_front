@@ -468,3 +468,20 @@ textarea {
 .btn-primary {
   background-color: #89ace7;
 }
+
+.fixed-width-select {
+  width: 85px; /* 您可以根據需要調整這個值 */
+  max-width: 100%;
+}
+
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 為了確保下拉選單中的選項也能正確顯示 */
+.fixed-width-select option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
