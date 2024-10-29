@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GenStory, getVoiceList } from "../utils/tools/fetch";
 import { sdmodel, sdmodel_list } from "../utils/sdmodel_list";
 import "../styles/Advanced.css";
 import { roleRelative } from "../utils/tools/roleRelateList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus, faMicrophone, faStop } from '@fortawesome/free-solid-svg-icons';
 
 const options: sdmodel[] = sdmodel_list;
+
+// 添加類型定義
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any;
+    SpeechRecognition: any;
+  }
+}
 
 const Advanced: React.FC = () => {
   const location = useLocation();
@@ -32,8 +40,47 @@ const Advanced: React.FC = () => {
   const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>("");
   const [isTemplateAccordionOpen, setIsTemplateAccordionOpen] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [relationships, setRelationships] = useState([{ characterA: '', characterB: '', relation: '' }]);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+  const recognitionRef = useRef<any>(null);  // 添加 ref 來存儲 recognition 實例
+
+  const startRecording = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'zh-TW';
+    recognition.continuous = false;  // 改為 false，每次只識別一段話
+    recognition.interimResults = false;  // 改為 false，只返回最終結果
+    
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setDescription(prev => prev + ' ' + transcript);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('語音識別錯誤:', event.error);
+      setIsRecording(false);
+    };
+
+    recognition.onend = () => {
+      if (isRecording) {  // 如果還在錄音狀態，就繼續開始新的識別
+        recognition.start();
+      }
+    };
+
+    recognitionRef.current = recognition;  // 保存 recognition 實例
+    recognition.start();
+    setIsRecording(true);
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
+    setIsRecording(false);
+  };
 
   const addCharacter = () => {
     setCharacters([...characters, ""]);
@@ -263,7 +310,7 @@ const Advanced: React.FC = () => {
               </div>
             </div>
 
-            {/* 進階角色設定 */}
+            {/* 進階角設定 */}
             <div className="row align-items-start mb-4">
               <div className="col-md-3 d-flex align-items-start justify-content-end">
                 <label htmlFor="advanced-settings" className="label-spacing">
@@ -374,8 +421,14 @@ const Advanced: React.FC = () => {
                   style={{
                     height: "400px",
                     backgroundColor: "RGB(231, 232, 238)",
-                  }} // 增加高度到300px
+                  }}
                 />
+                <button
+                  onClick={isRecording ? stopRecording : startRecording}
+                  className={`btn ${isRecording ? 'btn-danger' : 'btn-success'} ms-2`}
+                >
+                  <FontAwesomeIcon icon={isRecording ? faStop : faMicrophone} />
+                </button>
               </div>
             </div>
 
