@@ -11,6 +11,7 @@ export async function GenStory(RoleForm: Object, voiceModelName: string): Promis
         // 發送 POST 請求到 LLMGenStory API
         const response = await fetch(apis.LLMGenStory, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -116,29 +117,68 @@ export async function UploadVoice(audioBlob: Blob, audioName: string): Promise<{
     }
 }
 
-export async function userLogin(userName: string, userPassword: string): Promise<{ success: boolean, token: string }> {
+export async function userLogin(userName: string, userPassword: string): Promise<{ success: boolean, user?: { id: string, username: string }, token?: string }> {
     try {
         const response = await fetch(apis.userLogin, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ userName: userName, userPassword: userPassword })
+            credentials: 'include',  // 重要：允許跨域請求攜帶 cookie
+            body: JSON.stringify({ userName, userPassword })
         });
+
+        const data = await response.json();
+
         if (response.ok) {
-            const data = await response.json();
-            // 將令牌存儲在 cookie 中（可設置過期時間）
-            document.cookie = `authToken=${data.token}; max-age=3600; path=/`;
-            return { success: true, token: data.token };
+            if (data.success) {
+                console.log('登入成功');
+                // 不需要手動設置 cookie，服務器會通過 Set-Cookie 標頭自動設置
+                return { 
+                    success: true,
+                    user: data.user  // 從服務器返回的用戶信息
+                };
+            } else {
+                console.error('登入失敗：', data.message);
+                return { 
+                    success: false 
+                };
+            }
         } else {
-            console.error(`登入失敗：HTTP狀態碼 ${response.status}`);
-            return { success: false, token: '' };
+            console.error(`登入失敗：HTTP狀態碼 ${response.status}`, data.message);
+            return { 
+                success: false 
+            };
         }
     } catch (error) {
         console.error('登入過程中發生錯誤：', error);
-        return { success: false, token: '' };
+        return { 
+            success: false 
+        };
     }
 }
+
+// export async function userLogout(): Promise<{ success: boolean }> {
+//     try {
+//         const response = await fetch(apis.userLogout, {
+//             method: 'POST',
+//             credentials: 'include'
+//         });
+
+//         const data = await response.json();
+        
+//         if (response.ok && data.success) {
+//             console.log('登出成功');
+//             return { success: true };
+//         } else {
+//             console.error('登出失敗：', data.message);
+//             return { success: false };
+//         }
+//     } catch (error) {
+//         console.error('登出過程中發生錯誤：', error);
+//         return { success: false };
+//     }
+// }
 
 export async function userRegister(userName: string, userPassword: string): Promise<{ success: boolean, code: number, message: string }> {
     try {
