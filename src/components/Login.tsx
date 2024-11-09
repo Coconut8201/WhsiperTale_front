@@ -12,7 +12,7 @@ const Login: React.FC = () => {
         e.preventDefault();
         const result = await userLogin(username, password);
         if (result.success) {
-            console.log(`使用者 ${username} 登入成功, token: ${result.token}`);
+            console.log(`使用者 ${username} 登入成功`);
             navigate(`/style`);
         } else {
             console.log('登入失敗');

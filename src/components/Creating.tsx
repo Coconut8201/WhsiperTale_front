@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { sdmodel, sdmodel_list } from "../utils/sdmodel_list";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Creating.css';
+import { userLogout, verifyAuth } from "../utils/tools/fetch";
 
 const options: sdmodel[] = sdmodel_list;
 
@@ -11,14 +12,25 @@ export default function Creating() {
     const [isLogin, setIsLogin] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // 檢查 cookie 中是否存在身份令牌
-        const checkLoginStatus = () => {
-            const token = document.cookie.split('; ').find(row => row.startsWith('authToken='));
-            if (token) {
-                setIsLogin(true);
+    const handleLogout = async () => {
+        try {
+            const { success } = await userLogout();
+            if (success) {
+                setIsLogin(false);
+                navigate('/login');
+                alert('您已成功登出!');
             }
+        } catch (error) {
+            console.error('登出失敗:', error);
+        }
+    };
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            let verifyAuthStaus = await verifyAuth()
+            setIsLogin(verifyAuthStaus.isAuthenticated)
         };
+        
         checkLoginStatus();
     }, []);
 
@@ -51,6 +63,12 @@ export default function Creating() {
                     </div>
                     <button onClick={() => navigate('/login')} className="login">
                         { isLogin ? "已登入" : "未登入" }
+                    </button>
+                    <button 
+                        onClick={handleLogout} 
+                        className="login"
+                    >
+                        登出
                     </button>
                 </div>
                 <div className="body-content">

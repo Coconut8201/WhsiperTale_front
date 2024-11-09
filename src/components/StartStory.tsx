@@ -168,16 +168,17 @@ const StartStory: React.FC = () => {
                     setLoading(true);
                     const storyData = await StartStory_api(storyId);
                     setData(storyData);
-
                     const audioBlob = await GetVoice(storyId);
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    if (audioRef.current) {
-                        audioRef.current.src = audioUrl;
-                    } else {
-                        audioRef.current = new Audio(audioUrl);
-                        audioRef.current.addEventListener('play', () => setIsPlaying(true));
-                        audioRef.current.addEventListener('pause', () => setIsPlaying(false));
-                        audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+                    if (audioBlob) {
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        if (audioRef.current) {
+                            audioRef.current.src = audioUrl;
+                        } else {
+                            audioRef.current = new Audio(audioUrl);
+                            audioRef.current.addEventListener('play', () => setIsPlaying(true));
+                            audioRef.current.addEventListener('pause', () => setIsPlaying(false)); 
+                            audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+                        }
                     }
                 } else {
                     setError('No storyId provided in the query parameters.');

@@ -66,7 +66,7 @@ export async function StartStory_api(storyIdinput: string): Promise<any> {
     }
 }
 
-export async function GetVoice(storyId: string): Promise<Blob> {
+export async function GetVoice(storyId: string): Promise<Blob | null> {
     try {
         const playload = {
             "storyId": storyId
@@ -79,6 +79,12 @@ export async function GetVoice(storyId: string): Promise<Blob> {
             body: JSON.stringify(playload)
         });
 
+        // 如果狀態碼是 404，返回 null 而不是拋出錯誤
+        if (response.status === 404) {
+            console.log('找不到對應的音頻文件');
+            return null;
+        }
+
         if (!response.ok) {
             throw new Error(`GetVoice error! status: ${response.status}`);
         }
@@ -86,8 +92,8 @@ export async function GetVoice(storyId: string): Promise<Blob> {
         return await response.blob();
 
     } catch (error) {
-        console.error('GetVoice, Failed to fetch audio:', error);
-        throw error;
+        console.log('GetVoice, Failed to fetch audio:', error);
+        return null; // 返回 null 而不是拋出錯誤
     }
 }
 
@@ -158,27 +164,39 @@ export async function userLogin(userName: string, userPassword: string): Promise
     }
 }
 
-// export async function userLogout(): Promise<{ success: boolean }> {
-//     try {
-//         const response = await fetch(apis.userLogout, {
-//             method: 'POST',
-//             credentials: 'include'
-//         });
-
-//         const data = await response.json();
+export async function userLogout(): Promise<{ success: boolean }> {
+    try {
+        // 1. 先發送登出請求
+        const response = await fetch(apis.userLogout, {
+            method: 'GET',
+            credentials: 'include'
+        });
         
-//         if (response.ok && data.success) {
-//             console.log('登出成功');
-//             return { success: true };
-//         } else {
-//             console.error('登出失敗：', data.message);
-//             return { success: false };
-//         }
-//     } catch (error) {
-//         console.error('登出過程中發生錯誤：', error);
-//         return { success: false };
-//     }
-// }
+        // 2. 無論伺服器回應如何，都清除本地 cookie
+        const domains = ['', '.localhost', window.location.hostname];
+        const paths = ['/', '/api'];
+        
+        // 使用純 JavaScript 清除 cookie
+        domains.forEach(domain => {
+            paths.forEach(path => {
+                document.cookie = `authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}${domain ? `; domain=${domain}` : ''}; samesite=lax;`;
+            });
+        });
+
+        // 3. 處理伺服器回應
+        if (!response.ok) {
+            console.error('登出請求失敗：', response.statusText);
+            return { success: false };
+        }
+
+        const data = await response.json();
+        return { success: data.success || false };
+
+    } catch (error) {
+        console.error('登出過程中發生錯誤：', error);
+        return { success: false };
+    }
+}
 
 export async function userRegister(userName: string, userPassword: string): Promise<{ success: boolean, code: number, message: string }> {
     try {
@@ -236,5 +254,23 @@ export async function getVoiceList(): Promise<{ success: boolean, code: number, 
     } catch (error) {
         console.error('獲取語音列表過程中發生錯誤：', error);
         return { success: false, code: 500, message: error instanceof Error ? error.message : '未知錯誤' };
+    }
+}
+
+export async function verifyAuth(): Promise<{ isAuthenticated: boolean }> {
+    try {
+        const response = await fetch(apis.verifyAuth, {
+            method: 'GET',
+            credentials: 'include'
+        });
+        if (response.ok) {
+            // const data = await response.json();
+            // console.log(`data: ${JSON.stringify(data)}`)
+            return { isAuthenticated: true };
+        }
+        return { isAuthenticated: false };
+    } catch (error) {
+        console.error('verifyAuth fail：', error);
+        return { isAuthenticated: false };
     }
 }

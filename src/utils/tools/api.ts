@@ -11,8 +11,10 @@ export const enum apis {
     getAllSDModel = `http://163.13.202.120:7860/sdapi/v1/sd-models`,
     uploadVoice = `http://localhost:7943/voice/uploadvoices`,
     userLogin = "http://localhost:7943/user/login",
+    userLogout = "http://localhost:7943/user/logout",
     userRegister = "http://localhost:7943/user/adduser",
-    getVoiceList = "http://localhost:7943/voiceset/getVoiceList"
+    getVoiceList = "http://localhost:7943/voiceset/getVoiceList",
+    verifyAuth = "http://localhost:7943/user/verify-auth",
 
 
 
