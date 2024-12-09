@@ -51,7 +51,6 @@ function App() {
             {/* {http://localhost:3151/about_us} */}
             <Route path='about_us' element={<AboutUs />}></Route>
           </Route>
-
         </Routes>
       </BrowserRouter>
     </div>
