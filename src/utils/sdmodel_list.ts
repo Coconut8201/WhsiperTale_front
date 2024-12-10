@@ -17,7 +17,5 @@ export const sdmodel_list: sdmodel[] = [
     { sd_name: 'cuteCATCuteCitron_v2.safetensors [c75902b553]', show_name: 'Q版漫畫風格', image_path: '/src/images/cuteCATCuteCitron_v2_image.jpeg' },
     { sd_name: 'fantasyWorld_v10.safetensors', show_name: '奇幻風格', image_path: '/src/images/fantasyWorld_v10_image.jpeg' },
     { sd_name: 'flat2DAnimerge_v45Sharp.safetensors', show_name: '2D動漫風格', image_path: '/src/images/flat2DAnimerge_v45Sharp_image.jpeg' },
-    { sd_name: `cemremixRealistic_v10Pruned.safetensors`, show_name: `真實感`, image_path: '/src/images/cemremixRealistic_v10Pruned_image.jpeg' },
     { sd_name: `handDrawnPortrait_v10.safetensors [e39b954453]`, show_name: `手繪`, image_path: '/src/images/handDrawnPortrait_v10_image.jpeg' },
-    { sd_name: `paintersCheckpointOilPaint_v11.safetensors [4f9515f381]`, show_name: `油畫`, image_path: '/src/images/paintersCheckpointOilPaint_v11_image.jpeg' },
 ]
