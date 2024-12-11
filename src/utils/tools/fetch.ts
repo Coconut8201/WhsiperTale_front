@@ -104,7 +104,7 @@ export async function UploadVoice(audioBlob: Blob, audioName: string): Promise<{
 
 
     try {
-        const response = await fetch(apis.GetVoice, {
+        const response = await fetch(apis.uploadVoice, {
             method: 'POST',
             body: formData,
         });
