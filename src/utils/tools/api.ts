@@ -17,22 +17,6 @@ export const enum apis {
     // verifyAuth = "http://localhost:7943/user/verify-auth",
 
 
-
-    // //use
-    // startStory = `http://163.13.202.128:7943/story/startstory`,
-    // GetStoryList = `http://163.13.202.128:7943/story/getstorylist_fdb`,
-    // LLMGenStory = `http://163.13.202.128:7943/story/llm/genstory`,
-    // GenImagePrompt = `http://163.13.202.128:7943/story/llm/genimageprompt`,
-    // GetVoice = `http://163.13.202.128:7943/story/voice/take_voice`,
-    // GetNewaudio = `http://163.13.202.128:9880`,
-    // getAllSDModel = `http://163.13.202.128:7860/sdapi/v1/sd-models`,
-    // uploadVoice = `http://163.13.202.128:7943/voice/uploadvoices`,
-
-    // userLogin = "http://163.13.202.128:7943/user/login",
-    // userRegister = "http://163.13.202.128:7943/user/adduser"
-
-
-
     // using in Nginx
     startStory = `https://163.13.202.128/api/story/startstory`,
     GetStoryList = `https://163.13.202.128/api/story/getstorylist_fdb`,

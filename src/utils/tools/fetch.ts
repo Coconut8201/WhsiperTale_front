@@ -261,16 +261,21 @@ export async function verifyAuth(): Promise<{ isAuthenticated: boolean }> {
     try {
         const response = await fetch(apis.verifyAuth, {
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         });
+        // console.log('完整響應:', response);
+        // console.log('響應頭:', Object.fromEntries(response.headers));
+        
         if (response.ok) {
-            // const data = await response.json();
-            // console.log(`data: ${JSON.stringify(data)}`)
             return { isAuthenticated: true };
         }
         return { isAuthenticated: false };
     } catch (error) {
-        console.error('verifyAuth fail：', error);
+        console.error('verifyAuth fail:', error);
         return { isAuthenticated: false };
     }
 }
