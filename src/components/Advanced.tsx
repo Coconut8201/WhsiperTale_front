@@ -35,7 +35,7 @@ const Advanced: React.FC = () => {
   const [isLoad, setIsLoad] = useState<string>(""); // 是否在生成圖片
   const [reLoad, setReLoad] = useState<boolean>(false); // 重新生成圖片控制器
   const [imageSrc, setImageSrc] = useState<string>(
-    "/src/images/AnythingXL_xl_image.jpeg"
+    "src/images/ChineseInkComicStrip_v10_image.jpeg"
   );
   const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>("");

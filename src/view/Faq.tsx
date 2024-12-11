@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Faq() {
     const css4 = `
     .my-element4 {
