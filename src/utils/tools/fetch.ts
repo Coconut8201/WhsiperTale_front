@@ -238,6 +238,7 @@ export async function getVoiceList(): Promise<{ success: boolean, code: number, 
     try {
         const response = await fetch(apis.getVoiceList, {
             method: 'GET',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             }
