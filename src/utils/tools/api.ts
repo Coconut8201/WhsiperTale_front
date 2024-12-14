@@ -25,7 +25,7 @@ export const enum apis {
     GetVoice = `https://163.13.202.128/api/story/voice/take_voice`,
     GetNewaudio = `https://163.13.202.128/audio`,
     getAllSDModel = `https://163/sd/sdapi/v1/sd-models`,
-    uploadVoice = `https://163.13.202.128/api/voice/uploadvoices`,
+    uploadVoice = `https://163.13.202.128/api/voiceset/uploadvoices`,
     userLogin = "https://163.13.202.128/api/user/login",
     userRegister = "https://163.13.202.128/api/user/adduser",
     getVoiceList = "https://163.13.202.128/api/voiceset/getVoiceList",

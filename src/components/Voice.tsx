@@ -1,6 +1,8 @@
-import { useState, useRef, ChangeEvent, FormEvent } from 'react';
-import { UploadVoice } from "../utils/tools/fetch.ts";
+import { useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
+import { getVoiceList, UploadVoice } from "../utils/tools/fetch.ts";
+import { useNavigate } from 'react-router-dom';
 import '../styles/Voice.css';
+import React from 'react';
 
 export default function Voice() {
   const [isRecording, setIsRecording] = useState(false);
@@ -8,7 +10,22 @@ export default function Voice() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [audioName, setAudioName] = useState<string>("model_name");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
   const audioChunksRef = useRef<BlobPart[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchVoiceList = async () => {
+      const result = await getVoiceList();
+      console.log(`語音列表結果:`, result);
+      if (result.success && Array.isArray(result.data)) {
+        setVoiceOptions(result.data);
+      } else {
+        console.error("獲取語音列表失敗:", result.message);
+      }
+    };
+    fetchVoiceList();
+  }, [voiceOptions]);
 
   const startRecording = async () => {
     try {
@@ -49,6 +66,10 @@ export default function Voice() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (voiceOptions.includes(audioName)) {
+      alert('模型名稱已存在');
+      return;
+    }
     if (audioBlob) {
       try {
         await UploadVoice(audioBlob, audioName);
@@ -69,14 +90,22 @@ export default function Voice() {
   return (
     <div className="Vcontainer">
       <div className="header">
-        Whisper Tales
+        <div className='header-content'>
+          Whisper Tales
+        </div>
+        <button onClick={() => navigate('/style')} className="login">
+          返回故事生成
+        </button>
       </div>
       <div className="content">
         <div className="sidebar">
-          <p>語音模型：</p>
-          <label className='modelbutton'>爸爸</label>
-          &nbsp;&nbsp;
-          <label className='modelbutton'>媽媽</label>
+          <p>現有語音模型：</p>
+          {voiceOptions.map((voice, index) => (
+            <React.Fragment key={voice}>
+              <label className='modelbutton'>{voice}</label>
+              {index < voiceOptions.length - 1 && '\u00A0\u00A0'}
+            </React.Fragment>
+          ))}
         </div>
         <div className="divider"></div>
         <div className="main-content">
@@ -110,7 +139,7 @@ export default function Voice() {
           </div>
           {audioUrl && <audio src={audioUrl} controls />}
           <form onSubmit={handleSubmit}>
-          <p className="example-title">範例文本</p>
+            <p className="example-title">範例文本</p>
             <p className="example-text">
             從前有一座美麗的森林，住著一隻聰明的小狐狸叫小紅。她最喜歡在夜晚抬頭看星星。有一天，小紅發現天上有一顆特別明亮的星星，閃爍著她從未見過的光芒。好奇的小紅決定追尋這顆星星，於是她出發了。她穿越了森林、翻過了高山，最後來到了星星墜落的地方。那裡躺著一顆閃亮的銀色種子。小紅輕輕地把種子埋在土裡，沒想到第二天早上，一棵會發光的樹苗從土裡冒了出來！這棵樹不僅會照亮黑夜，還能給森林裡的動物們帶來溫暖和希望。從此，森林變得更加繁榮，小紅也成為了大家的英雄。
             </p>

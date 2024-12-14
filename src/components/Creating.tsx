@@ -35,10 +35,15 @@ export default function Creating() {
     }, []);
 
     const handleSearch = () => {
+        if( isLogin == false ) {
+            alert('請先登入');
+            navigate('/Login');
+            return;
+        }
         if (searchQuery.trim()) {
             navigate(`/style/role?query=${encodeURIComponent(searchQuery)}`);
         } else {
-            alert('請輸入搜索內容');
+            alert('請選擇圖片風格');
         }
     };
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,6 +66,9 @@ export default function Creating() {
                     <div className="header-content">
                         WisperTales
                     </div>
+                    <button onClick={() => navigate('/voice')} className="login">
+                        語音管理
+                    </button>
                     <button onClick={() => navigate('/login')} className="login">
                         { isLogin ? "已登入" : "未登入" }
                     </button>
@@ -80,12 +88,12 @@ export default function Creating() {
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     onKeyDown={handleKeyDown}
-                                    placeholder="輸入搜索內容"
+                                    placeholder="選擇故事圖片風格"
                                     readOnly
                                     className="form-control border-left-0 rounded-pill custom-search-input non-editable AAA"
                                 />
                                 <div className="input-group-append">
-                                    <button onClick={handleSearch} className="button-submit AAA">搜索</button>
+                                    <button onClick={handleSearch} className="button-submit AAA">選擇</button>
                                 </div>
 
                             </div>
