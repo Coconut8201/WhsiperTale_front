@@ -5,7 +5,7 @@ import '../styles/StartStory.css';
 import { pdf, Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import HTMLFlipBook from "react-pageflip";
 
-
+//註冊字體
 Font.register({
     family: "Noto Sans TC",
     src: "/Assets/NotoSansTC-VariableFont_wght.ttf",
@@ -65,10 +65,9 @@ const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text }, ref
 const StartStory: React.FC = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const storyId = searchParams.get('query'); // 從 URL 中獲取 storyId
+    const storyId = searchParams.get('query');
 
     const [data, setData] = useState<storyInterface | null>(null);
-    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [pageIndex, setPageIndex] = useState(0);
     const navigate = useNavigate();
@@ -168,7 +167,30 @@ const StartStory: React.FC = () => {
                     setLoading(true);
                     const storyData = await StartStory_api(storyId);
                     setData(storyData);
-                    const audioBlob = await GetVoice(storyId);
+                    setLoading(false);
+                } else {
+                    navigate('/');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [storyId, navigate]);
+
+    useEffect(() => {
+        const fetchAudio = async () => {
+            try {
+                if (storyId) {
+                    // 停止當前播放的音頻
+                    if (audioRef.current) {
+                        audioRef.current.pause();
+                        audioRef.current.currentTime = 0;
+                        setIsPlaying(false);
+                    }
+                    
+                    const audioBlob = await GetVoice(storyId, Math.floor(pageIndex / 2) + 1);
                     if (audioBlob) {
                         const audioUrl = URL.createObjectURL(audioBlob);
                         if (audioRef.current) {
@@ -176,79 +198,71 @@ const StartStory: React.FC = () => {
                         } else {
                             audioRef.current = new Audio(audioUrl);
                             audioRef.current.addEventListener('play', () => setIsPlaying(true));
-                            audioRef.current.addEventListener('pause', () => setIsPlaying(false)); 
                             audioRef.current.addEventListener('ended', () => setIsPlaying(false));
                         }
                     }
-                } else {
-                    setError('No storyId provided in the query parameters.');
                 }
-            } catch (err) {
-                setError((err as Error).message);
-            } finally {
-                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching audio:', error);
             }
         };
-        fetchData();
+        fetchAudio();
 
         // 清理函數
         return () => {
             if (audioRef.current) {
-                audioRef.current.removeEventListener('play', () => setIsPlaying(true));
-                audioRef.current.removeEventListener('pause', () => setIsPlaying(false));
-                audioRef.current.removeEventListener('ended', () => setIsPlaying(false));
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+                setIsPlaying(false);
             }
         };
-    }, [storyId]);
+    }, [storyId, pageIndex]);
 
     const handleNextPage = () => {
         if (data && data.image_base64 && pageIndex < data.image_base64.length - 2) {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+                setIsPlaying(false);
+            }
             setPageIndex(pageIndex + 2);
+            if (bookRef.current) {
+                bookRef.current.pageFlip().flipNext();
+            }
         }
     };
 
-    const handlePreviousPage = () => {
+    const handlePrevPage = () => {
         if (pageIndex > 0) {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+                setIsPlaying(false);
+            }
             setPageIndex(pageIndex - 2);
+            if (bookRef.current) {
+                bookRef.current.pageFlip().flipPrev();
+            }
         }
-    };
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
-
-    const BackPage = () => {
-        navigate(`/style`);
     };
 
     const handleVoiceClick = () => {
         if (audioRef.current) {
-            if (audioRef.current.paused) {
-                audioRef.current.play();
-                setIsPlaying(true);
-            } else {
+            if (isPlaying) {
                 audioRef.current.pause();
                 setIsPlaying(false);
+            } else {
+                audioRef.current.play();
+                setIsPlaying(true);
             }
-        }
-    };
-
-    const nextPage = () => {
-        if (bookRef.current) {
-            bookRef.current.pageFlip().flipNext();
-        }
-    };
-    
-    const prevPage = () => {
-        if (bookRef.current) {
-            bookRef.current.pageFlip().flipPrev();
         }
     };
 
     return (
         <div className='containerbook'>
-            <button onClick={BackPage} className="button-back">返回</button>
+            <button onClick={() => navigate(`/style`)} className="button-back">返回</button>
             <button onClick={handleVoiceClick} className="button-audio">
-                {isPlaying ? 'Pause' : 'Play'}
+                {isPlaying ? '暫停' : '播放'}
             </button>
             {data ? (
                 <div className='book'>
@@ -286,9 +300,9 @@ const StartStory: React.FC = () => {
                         ))}
                     </HTMLFlipBook>
                     <div className="navigation-container">
-                        <button className='navigation-button' onClick={prevPage}>上一頁</button>
+                        <button className='navigation-button' onClick={handlePrevPage}>上一頁</button>
                         <PdfTest data={data} storyLines={storyLines} />
-                        <button className='navigation-button' onClick={nextPage}>下一頁</button>
+                        <button className='navigation-button' onClick={handleNextPage}>下一頁</button>
                     </div>
                 </div>
             ) : (

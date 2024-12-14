@@ -66,11 +66,13 @@ export async function StartStory_api(storyIdinput: string): Promise<any> {
     }
 }
 
-export async function GetVoice(storyId: string): Promise<Blob | null> {
+export async function GetVoice(storyId: string, pageIndex: number): Promise<Blob | null> {
     try {
         const playload = {
-            "storyId": storyId
+            "storyId": storyId,
+            "pageIndex": pageIndex
         }
+        console.log(`playload: ${JSON.stringify(playload)}`);
         const response = await fetch(apis.GetVoice, {
             method: 'POST',
             headers: {
