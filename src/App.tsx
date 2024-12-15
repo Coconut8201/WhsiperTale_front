@@ -14,6 +14,7 @@ import MyBook from "./components/Mybook";
 import PdfTest from "./components/PdfTest";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import BookManage from "./components/BookManage";
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
             <Route path="style/role/startStory" element={<StartStory />}></Route>
             {/** http://localhost:3151/voice */}
             <Route path="voice" element={<Voice />}></Route>
+            {/** http://localhost:3151/bookmanage */}
+            <Route path="bookmanage" element={<BookManage />}></Route>
 
             {/**  http://localhost:3151/generate/mybook */}
             <Route path="mybook" index element={<MyBook />} ></Route>

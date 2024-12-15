@@ -18,3 +18,9 @@ export const sdmodel_list: sdmodel[] = [
     { sd_name: 'flat2DAnimerge_v45Sharp.safetensors', show_name: '2D動漫風格', image_path: '/src/images/flat2DAnimerge_v45Sharp_image.jpeg' },
     { sd_name: `handDrawnPortrait_v10.safetensors [e39b954453]`, show_name: `手繪`, image_path: '/src/images/handDrawnPortrait_v10_image.jpeg' },
 ]
+
+export interface bookManageList {
+    bookName: string,               // 顯示的書本名字
+    bookId: string,                 // 書本id storyId
+    bookFirstImageBase64: string    // 封面頁的圖片base64 code
+}

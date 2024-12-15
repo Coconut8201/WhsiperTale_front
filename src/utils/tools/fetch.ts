@@ -1,4 +1,5 @@
 import { storyInterface } from "../../components/StartStory";
+import { bookManageList } from "../sdmodel_list";
 import { apis } from './api'; // 假設這是你的 API 配置文件的路徑
 
 // 定義 GenStory 函數，它接收 RoleForm 對象並返回 Promise
@@ -280,5 +281,26 @@ export async function verifyAuth(): Promise<{ isAuthenticated: boolean }> {
     } catch (error) {
         console.error('verifyAuth fail:', error);
         return { isAuthenticated: false };
+    }
+}
+
+export async function getBookList(): Promise<any> {
+    try {
+        const response = await fetch(apis.GetStoryList, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const responseData: { success: boolean, data?: bookManageList, message: string} = await response.json()
+        console.log(`responseData: ${JSON.stringify(responseData)}`)
+        if (!response.ok || !responseData.data) {
+            return;
+        }
+        return responseData.data
+    } catch (error) {
+        console.error('getBookList fail: ', error)
+        return;
     }
 }

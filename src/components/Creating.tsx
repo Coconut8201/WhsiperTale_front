@@ -66,6 +66,9 @@ export default function Creating() {
                     <div className="header-content">
                         WisperTales
                     </div>
+                    <button onClick={() => navigate('/bookmanage')} className="login">
+                        書本管理
+                    </button>
                     <button onClick={() => navigate('/voice')} className="login">
                         語音管理
                     </button>
@@ -103,7 +106,7 @@ export default function Creating() {
                     <div className="row">
                         {options.map((option, index) => (
                             <div
-                                key={`${option.show_name}-${index}`} // 使用 option.show_name 和索引的组合来確保唯一性
+                                key={`${option.show_name}-${index}`}
                                 className="col-md-3 mb-4"
                                 onClick={() => handleOptionClick(option.show_name)}
                             >
