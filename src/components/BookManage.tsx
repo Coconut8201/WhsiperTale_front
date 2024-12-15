@@ -9,6 +9,7 @@ let options: bookManageList[] = [];
 
 export default function BookManage() {
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [selectedBookId, setSelectedBookId] = useState<string>('');
     const [storyId, setStoryId] = useState<string>('');
     const [isLogin, setIsLogin] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -22,12 +23,10 @@ export default function BookManage() {
             
             try {
                 const result = await getBookList();
-                console.log(`result: ${JSON.stringify(result)}`)
-                if (result.success && result.data) {
-
-                } else {
+                if (!result) {
                     setError(result.error || '獲取書籍列表失敗');
                 }
+                options.push(...result);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : '獲取書籍列表時發生錯誤';
                 setError(errorMessage);
@@ -55,8 +54,8 @@ export default function BookManage() {
             navigate('/Login');
             return;
         }
-        if (storyId.trim()) {
-            navigate(`/style/role/startStory?query=${encodeURIComponent(storyId)}`);
+        if (selectedBookId.trim()) {
+            navigate(`/style/role/startStory?query=${encodeURIComponent(selectedBookId)}`);
         } else {
             alert('請選擇故事書');
         }
@@ -67,8 +66,9 @@ export default function BookManage() {
         }
     };
 
-    const handleOptionClick = (value: string) => {
-        setSearchQuery(value);
+    const handleOptionClick = (bookName: string, bookId: string) => {
+        setSearchQuery(bookName);
+        setSelectedBookId(bookId);
     };
 
     return (
@@ -128,14 +128,24 @@ export default function BookManage() {
                                     <p>目前沒有可用的書籍</p>
                                 </div>
                             ) : (
-                                options.map((option, index) => (
+                                options.map((option) => (
                                     <div
-                                        key={`${option.bookName}-${index}`} // 使用 option.show_name 和索引的组合来確保唯一性
+                                        key={`${option.bookId}`}
                                         className="col-md-3 mb-4"
-                                        onClick={() => handleOptionClick(option.bookName)}
+                                        onClick={() => handleOptionClick(option.bookName, option.bookId)}
                                     >
                                         <div className="card h-100">
-                                            <img src={option.bookFirstImageBase64} alt={option.bookFirstImageBase64} className="card-img-top" />
+                                            {option.bookFirstImageBase64 ? (
+                                                <img 
+                                                    src={`data:image/png;base64,${option.bookFirstImageBase64}`} 
+                                                    alt={option.bookName} 
+                                                    className="card-img-top" 
+                                                />
+                                            ) : (
+                                                <div className="card-img-top d-flex align-items-center justify-content-center bg-light">
+                                                    無圖片
+                                                </div>
+                                            )}
                                             <div className="card-body text-center">
                                                 <p className="card-text">{option.bookName}</p>
                                             </div>

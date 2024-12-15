@@ -294,7 +294,6 @@ export async function getBookList(): Promise<any> {
             }
         });
         const responseData: { success: boolean, data?: bookManageList, message: string} = await response.json()
-        console.log(`responseData: ${JSON.stringify(responseData)}`)
         if (!response.ok || !responseData.data) {
             return;
         }
