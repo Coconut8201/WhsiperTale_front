@@ -5,15 +5,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/BookManage.css';
 import { getBookList, verifyAuth } from "../utils/tools/fetch";
 
-let options: bookManageList[] = [];
-
 export default function BookManage() {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [selectedBookId, setSelectedBookId] = useState<string>('');
-    const [storyId, setStoryId] = useState<string>('');
     const [isLogin, setIsLogin] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [options, setOptions] = useState<bookManageList[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,9 +22,10 @@ export default function BookManage() {
             try {
                 const result = await getBookList();
                 if (!result) {
-                    setError(result.error || '獲取書籍列表失敗');
+                    setError('獲取書籍列表失敗');
+                } else {
+                    setOptions(result);
                 }
-                options.push(...result);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : '獲取書籍列表時發生錯誤';
                 setError(errorMessage);

@@ -206,6 +206,7 @@ const StartStory: React.FC = () => {
                 console.error('Error fetching audio:', error);
             }
         };
+        // TODO 翻頁動畫、封面頁、使用者個人書籍管理、故事聲音還有問題
         fetchAudio();
 
         // 清理函數
@@ -266,7 +267,6 @@ const StartStory: React.FC = () => {
             </button>
             {data ? (
                 <div className='book'>
-                    // TODO 翻頁動畫、封面頁、使用者個人書籍管理、故事聲音還有問題
                     <HTMLFlipBook
                         style={{}}
                         startPage={0}

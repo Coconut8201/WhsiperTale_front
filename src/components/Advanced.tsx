@@ -93,6 +93,9 @@ const Advanced: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if(selectedVoice == "") {
+        return alert("請選擇語音");
+    }
     const targetModel = options.find(
       (model) => model.show_name === selectedStyle
     );
