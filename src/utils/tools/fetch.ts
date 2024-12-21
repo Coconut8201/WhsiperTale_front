@@ -9,30 +9,31 @@ export async function GenStory(RoleForm: Object, voiceModelName: string): Promis
         voiceModelName: voiceModelName
     }
     try {
-        // 發送 POST 請求到 LLMGenStory API
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 600000);
+
         const response = await fetch(apis.LLMGenStory, {
             method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(playload)
+            body: JSON.stringify(playload),
+            signal: controller.signal
         });
 
-        // 檢查 response 是否成功
-        if (response.ok) {  // Response 對象具有 `ok` 屬性
-            const responseData = await response.json(); // 解析 JSON 數據
-            // console.log('成功提交數據:', responseData);
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+            const responseData = await response.json();
             return responseData;
         } else {
-            // 錯誤處理
             console.error('提交失敗:', response.statusText);
-            return null; // 返回 null 以表示提交失敗
+            return null;
         }
     } catch (error) {
-        // 捕獲並處理異常
         console.error('提交時出錯:', error);
-        return 1; // 返回 null 以表示捕獲到異常
+        return 1;
     }
 }
 
