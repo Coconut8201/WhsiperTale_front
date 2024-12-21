@@ -98,7 +98,6 @@ export default function Creating() {
                                 <div className="input-group-append">
                                     <button onClick={handleSearch} className="button-submit AAA">選擇</button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -109,6 +108,7 @@ export default function Creating() {
                                 key={`${option.show_name}-${index}`}
                                 className="col-md-3 mb-4"
                                 onClick={() => handleOptionClick(option.show_name)}
+                                onDoubleClick={handleSearch}
                             >
                                 <div className="card h-100">
                                     <img src={option.image_path} alt={option.show_name} className="card-img-top" />
