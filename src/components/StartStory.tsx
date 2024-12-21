@@ -62,6 +62,14 @@ const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text }, ref
     );
 });
 
+// 添加 loading 動畫的樣式
+const LoadingSpinner: React.FC = () => (
+    <div className="loading-spinner">
+        <div className="spinner"></div>
+        <p>故事載入中...</p>
+    </div>
+);
+
 const StartStory: React.FC = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -265,7 +273,9 @@ const StartStory: React.FC = () => {
             <button onClick={handleVoiceClick} className="button-audio">
                 {isPlaying ? '暫停' : '播放'}
             </button>
-            {data ? (
+            {loading ? (
+                <LoadingSpinner />
+            ) : data ? (
                 <div className='book'>
                     <HTMLFlipBook
                         style={{}}

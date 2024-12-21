@@ -105,23 +105,23 @@
 
 /* 圖片樣式 */
 .story-image {
-    max-width: 100%; /* 圖片最大寬度設為容器的100% */
-    max-height: 60%; /* 限制圖片的最大高度 */
+    max-width: 100%;
+    max-height: 60%;
     object-fit: contain;
-    display: block; /* 確保圖片是塊級元素 */
-    margin: 0 auto; /* 讓圖片在容器中置中 */
+    display: block;
+    margin: 0 auto;
 }
 
 /* 圖片下方文字樣式 */
 .pre {
     margin-top: 20px;
     font-size: 1.2rem;
-    text-align: left; /* 文字置中 */
+    text-align: left;
     width: 100%;
-    word-wrap: break-word; /* 文字超出寬度時自動換行 */
-    white-space: normal; /* 允許空白處自動換行 */
+    word-wrap: break-word;
+    white-space: normal;
     overflow: hidden;
-    max-width: 80%; /* 確保文字寬度不超過圖片的80% */
+    max-width: 80%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -223,4 +223,26 @@
     .p-size {
         font-size: 1rem;
     }
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
