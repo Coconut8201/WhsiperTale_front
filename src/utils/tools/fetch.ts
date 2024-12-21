@@ -101,31 +101,65 @@ export async function GetVoice(storyId: string, pageIndex: number): Promise<Blob
     }
 }
 
-export async function UploadVoice(audioBlob: Blob, audioName: string): Promise<{ result: boolean, message: string }> {
-    const formData = new FormData();
-    formData.append("file", audioBlob, `${audioName}.wav`);
-    formData.append("audioName", audioName);
+export const UploadVoice = async (formData: FormData): Promise<any> => {
+  try {
+    const response = await fetch('/api/voiceset/uploadvoices', {
+      method: 'POST',
+      credentials: 'include',
+      // 不要設置 Content-Type，讓瀏覽器自動處理
+      body: formData
+    });
 
-
-    try {
-        const response = await fetch(apis.uploadVoice, {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok) {
-            return { result: true, message: "UploadVoice success" };
-        } else {
-            const errorMessage = `UploadVoice failed with status: ${response.status}`;
-            console.log(errorMessage);
-            return { result: false, message: errorMessage };
-        }
-    } catch (error) {
-        const errorMessage = `UploadVoice failed: ${error}`;
-        console.log(errorMessage);
-        return { result: false, message: errorMessage };
+    // 先檢查回應的內容類型
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      if (!response.ok) {
+        return {
+          code: response.status,
+          message: data.message || '上傳失敗'
+        };
+      }
+      return data;
+    } else {
+      // 如果不是 JSON 回應，可能是其他錯誤
+      const text = await response.text();
+      throw new Error(text || '伺服器回應格式錯誤');
     }
-}
+  } catch (error) {
+    console.error('上傳音頻時發生錯誤:', error);
+    return {
+      code: 500,
+      message: error instanceof Error ? error.message : '無法連接到伺服器'
+    };
+  }
+};
+
+// export async function UploadVoice(audioBlob: Blob, audioName: string): Promise<{ result: boolean, message: string }> {
+//     const formData = new FormData();
+//     formData.append("file", audioBlob, `${audioName}.wav`);
+//     formData.append("audioName", audioName);
+
+
+//     try {
+//         const response = await fetch(apis.uploadVoice, {
+//             method: 'POST',
+//             body: formData,
+//         });
+
+//         if (response.ok) {
+//             return { result: true, message: "UploadVoice success" };
+//         } else {
+//             const errorMessage = `UploadVoice failed with status: ${response.status}`;
+//             console.log(errorMessage);
+//             return { result: false, message: errorMessage };
+//         }
+//     } catch (error) {
+//         const errorMessage = `UploadVoice failed: ${error}`;
+//         console.log(errorMessage);
+//         return { result: false, message: errorMessage };
+//     }
+// }
 
 export async function userLogin(userName: string, userPassword: string): Promise<{ success: boolean, user?: { id: string, username: string }, token?: string }> {
     try {
