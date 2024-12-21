@@ -50,12 +50,25 @@ const Advanced: React.FC = () => {
     const recognition = new SpeechRecognition();
     
     recognition.lang = 'zh-TW';
-    recognition.continuous = false;  // 改為 false，每次只識別一段話
-    recognition.interimResults = false;  // 改為 false，只返回最終結果
+    recognition.continuous = true;
+    recognition.interimResults = true;
     
+    let lastResult = '';  // 追蹤上一次的結果
+
     recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setDescription(prev => prev + ' ' + transcript);
+      let finalTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {  // 從 resultIndex 開始
+        if (event.results[i].isFinal) {
+          const transcript = event.results[i][0].transcript;
+          if (transcript !== lastResult) {  // 只有當結果不同時才添加
+            finalTranscript += transcript;
+            lastResult = transcript;
+          }
+        }
+      }
+      if (finalTranscript) {
+        setDescription(prev => prev + ' ' + finalTranscript);
+      }
     };
 
     recognition.onerror = (event: any) => {
@@ -64,12 +77,12 @@ const Advanced: React.FC = () => {
     };
 
     recognition.onend = () => {
-      if (isRecording) {  // 如果還在錄音狀態，就繼續開始新的識別
+      if (isRecording) {  // 如果還在錄音狀態，就重新開始錄音
         recognition.start();
       }
     };
 
-    recognitionRef.current = recognition;  // 保存 recognition 實例
+    recognitionRef.current = recognition;
     recognition.start();
     setIsRecording(true);
   };
