@@ -132,6 +132,7 @@ export default function BookManage() {
                                         key={`${option.bookId}`}
                                         className="col-md-3 mb-4"
                                         onClick={() => handleOptionClick(option.bookName, option.bookId)}
+                                        onDoubleClick={handleSearch}
                                     >
                                         <div className="card h-100">
                                             {option.bookFirstImageBase64 ? (
