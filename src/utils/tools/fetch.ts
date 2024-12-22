@@ -103,7 +103,7 @@ export async function GetVoice(storyId: string, pageIndex: number): Promise<Blob
 
 export async function UploadVoice(audioBlob: Blob, audioName: string): Promise<{ result: boolean, message: string }> {
     const formData = new FormData();
-    formData.append("file", audioBlob, `${audioName}.wav`);
+    formData.append("files", audioBlob, `${audioName}.wav`);
     formData.append("audioName", audioName);
 
 
