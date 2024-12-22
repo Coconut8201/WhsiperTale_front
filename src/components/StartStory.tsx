@@ -271,7 +271,7 @@ const StartStory: React.FC = () => {
 
     return (
         <div className='containerbook'>
-            <button onClick={() => navigate(`/style`)} className="button-back">返回</button>
+            <button onClick={() => navigate('/bookmanage')} className="button-back">返回</button>
             {pageIndex >= 1 && (
                 <button onClick={handleVoiceClick} className="button-audio">
                     {isPlaying ? '暫停' : '播放'}
