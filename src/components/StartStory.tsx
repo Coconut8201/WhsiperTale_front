@@ -198,15 +198,18 @@ const StartStory: React.FC = () => {
                         setIsPlaying(false);
                     }
                     
-                    const audioBlob = await GetVoice(storyId, Math.floor(pageIndex / 2) + 1);
-                    if (audioBlob) {
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        if (audioRef.current) {
-                            audioRef.current.src = audioUrl;
-                        } else {
-                            audioRef.current = new Audio(audioUrl);
-                            audioRef.current.addEventListener('play', () => setIsPlaying(true));
-                            audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+                    // 修改：只有當 pageIndex >= 1 時才獲取音頻
+                    if (pageIndex >= 1) {
+                        const audioBlob = await GetVoice(storyId, Math.floor((pageIndex - 1) / 2) + 1);
+                        if (audioBlob) {
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            if (audioRef.current) {
+                                audioRef.current.src = audioUrl;
+                            } else {
+                                audioRef.current = new Audio(audioUrl);
+                                audioRef.current.addEventListener('play', () => setIsPlaying(true));
+                                audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+                            }
                         }
                     }
                 }
@@ -214,7 +217,6 @@ const StartStory: React.FC = () => {
                 console.error('Error fetching audio:', error);
             }
         };
-        // TODO 翻頁動畫、封面頁、使用者個人書籍管理、故事聲音還有問題
         fetchAudio();
 
         // 清理函數
@@ -270,9 +272,11 @@ const StartStory: React.FC = () => {
     return (
         <div className='containerbook'>
             <button onClick={() => navigate(`/style`)} className="button-back">返回</button>
-            <button onClick={handleVoiceClick} className="button-audio">
-                {isPlaying ? '暫停' : '播放'}
-            </button>
+            {pageIndex >= 1 && (
+                <button onClick={handleVoiceClick} className="button-audio">
+                    {isPlaying ? '暫停' : '播放'}
+                </button>
+            )}
             {loading ? (
                 <LoadingSpinner />
             ) : data ? (

@@ -30,4 +30,5 @@ export const enum apis {
     userRegister = "https://163.13.202.128/api/user/adduser",
     getVoiceList = "https://163.13.202.128/api/voiceset/getVoiceList",
     verifyAuth = "https://163.13.202.128/api/user/verify-auth",
+    userLogout = "https://163.13.202.128/api/user/logout",
 }
