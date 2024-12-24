@@ -284,8 +284,8 @@ const StartStory: React.FC = () => {
                     <HTMLFlipBook
                         style={{}}
                         startPage={0}
-                        width={300}
-                        height={400}
+                        width={600}
+                        height={700}
                         drawShadow={true}
                         flippingTime={10}
                         usePortrait={false}
@@ -300,7 +300,7 @@ const StartStory: React.FC = () => {
                         minWidth={250}
                         maxWidth={1000}
                         minHeight={300}
-                        maxHeight={1533}
+                        maxHeight={1000}
                         maxShadowOpacity={0.5}
                         showCover={true}
                         mobileScrollSupport={true}
