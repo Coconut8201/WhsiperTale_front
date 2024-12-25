@@ -100,11 +100,27 @@ const StartStory: React.FC = () => {
         if (!data?.storyTale) return [];
         const lines = data.storyTale.split('\n\n').map(line => line.trim());
         
-        // 為每一行分別取得注音
         const fetchZhuyinForLines = async () => {
             try {
                 const zhuyinPromises = lines.map(line => makeZhuyin(line));
-                const zhuyinResults = await Promise.all(zhuyinPromises);
+                let zhuyinResults = await Promise.all(zhuyinPromises);
+                
+                // 在這裡處理 zhuyinResults
+                zhuyinResults = zhuyinResults.map(result => {
+                    if (Array.isArray(result)) {
+                        return result.map(char => {
+                            const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
+                            // 如果是標點符號，返回空陣列
+                            if (chinesePunctuationRegex.test(char[0])) {
+                                return [];
+                            }
+                            return char;
+                        });
+                    }
+                    return result;
+                });
+
+                console.log('處理後的 zhuyinResults：', zhuyinResults);
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
@@ -126,7 +142,8 @@ const StartStory: React.FC = () => {
         const zhuyinArray = (zhuyinData[index].zhuyin as string[][]);
         
         const combinedElements = text.split('').map((char, charIndex) => {
-            const zhuyin = zhuyinArray[charIndex]?.join('') || '';
+            const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
+            const zhuyin = chinesePunctuationRegex.test(char) ? '' : (zhuyinArray[charIndex]?.join('') || '');
             return (
                 <ruby key={charIndex}>
                     {char}<rt>{zhuyin}</rt>
