@@ -213,6 +213,16 @@ const StartStory: React.FC = () => {
                     setLoading(true);
                     const storyData = await StartStory_api(storyId);
                     const zhuyinResult = await makeZhuyin(storyData.storyTale);
+                    
+                    if (zhuyinResult.zhuyin) {
+                        zhuyinResult.zhuyin = zhuyinResult.zhuyin.map((charZhuyin: string[], index: number) => {
+                            if (charZhuyin[0].replace(/\n/g, '') === zhuyinResult.original[index]) {
+                                return [];
+                            }
+                            return charZhuyin;
+                        });
+                    }
+                    
                     setZhuyinData(zhuyinResult);
                     setData(storyData);
                     setLoading(false);
