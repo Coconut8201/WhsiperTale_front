@@ -105,23 +105,6 @@ const StartStory: React.FC = () => {
             try {
                 const zhuyinPromises = lines.map(line => makeZhuyin(line));
                 const zhuyinResults = await Promise.all(zhuyinPromises);
-                console.log('zhuyinResults：', zhuyinResults);
-
-                // zhuyinResults.forEach(result => {
-                //     if (result.zhuyin) {
-                //         // 處理注音
-                //         const processedZhuyin = result.zhuyin.map((charZhuyin: string[], index: number) => {
-                //             if (charZhuyin[0].replace(/\n/g, '') === result.original[index]) {
-                //                 return [];
-                //             }
-                //             return charZhuyin;
-                //         });
-                        
-                //         // 合併結果
-                //         combinedZhuyin.original += result.original;
-                //         combinedZhuyin.zhuyin.push(...processedZhuyin);
-                //     }
-                // });
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
