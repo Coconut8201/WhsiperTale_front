@@ -151,7 +151,6 @@ const StartStory: React.FC = () => {
             );
         });
 
-        let currentPosition = 0;
         let currentLine: JSX.Element[] = [];
         let lines: JSX.Element[] = [];
         let lineLength = 0;
