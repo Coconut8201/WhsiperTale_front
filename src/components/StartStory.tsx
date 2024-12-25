@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useRef, useMemo, forwardRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { StartStory_api, GetVoice } from '../utils/tools/fetch';
+import { StartStory_api, GetVoice, makeZhuyin } from '../utils/tools/fetch';
 import '../styles/StartStory.css';
 import { pdf, Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import HTMLFlipBook from "react-pageflip";
 
-//註冊字體
 Font.register({
     family: "Noto Sans TC",
     src: "/Assets/NotoSansTC-VariableFont_wght.ttf",
+});
+
+Font.register({
+    family: "Bopomofo Ruby",
+    src: "/font/Bopomofo Ruby 1909 Regular.ttf",
 });
 
 const pdf_styles = StyleSheet.create({
@@ -27,12 +31,16 @@ const pdf_styles = StyleSheet.create({
     },
     storyText: {
         fontSize: 12,
-        textAlign: 'left', // 左對齊文字
-        width: '80%', // 確保文字寬度不超過容器寬度
+        textAlign: 'left',
+        width: '80%',
         fontFamily: 'Noto Sans TC',
         lineHeight: 1.2,
         marginTop: 10,
     },
+    rubyText: {
+        fontFamily: 'Bopomofo Ruby',
+        fontSize: 8,
+    }
 });
 
 export interface storyInterface {
@@ -70,6 +78,11 @@ const LoadingSpinner: React.FC = () => (
     </div>
 );
 
+interface StoryWithZhuyin {
+    original: string;
+    zhuyin: string[][];
+}
+
 const StartStory: React.FC = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -82,28 +95,50 @@ const StartStory: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const bookRef = useRef<any>(null);
+    const [zhuyinData, setZhuyinData] = useState<StoryWithZhuyin | null>(null);
 
     const storyLines = useMemo(() => {
         if (!data?.storyTale) return [];
         return data.storyTale.split('\n\n').map(line => line.trim());
     }, [data?.storyTale]);
 
-    const formatText = (text: string, maxLineLength: number = 23): string => {
-        let formattedText = '';
-        let currentLineLength = 0;
-    
-        for (let i = 0; i < text.length; i++) {
-            formattedText += text[i];
-            currentLineLength++;
-    
-            // 當行長度達到最大值時，進行換行
-            if (currentLineLength === maxLineLength) {
-                formattedText += '\n';
-                currentLineLength = 0;
-            }
+    const formatText = (text: string, zhuyinArray: string[][] | undefined, maxLineLength: number = 23): JSX.Element => {
+        if (!zhuyinArray) {
+            return <span>{text}</span>;
         }
-    
-        return formattedText;
+
+        let currentPosition = 0;
+        let currentLine: JSX.Element[] = [];
+        let lines: JSX.Element[] = [];
+        let lineLength = 0;
+
+        // 將文字和注音組合在一起
+        const combinedElements = text.split('').map((char, index) => {
+            const zhuyin = zhuyinArray[index]?.join('') || '';
+            return (
+                <ruby key={index}>
+                    {char}<rt>{zhuyin}</rt>
+                </ruby>
+            );
+        });
+
+        // 處理換行
+        combinedElements.forEach((element, index) => {
+            currentLine.push(element);
+            lineLength++;
+
+            if (lineLength >= maxLineLength || text[index] === '\n') {
+                lines.push(<div key={`line-${lines.length}`} className="text-line">{currentLine}</div>);
+                currentLine = [];
+                lineLength = 0;
+            }
+        });
+
+        if (currentLine.length > 0) {
+            lines.push(<div key={`line-${lines.length}`} className="text-line">{currentLine}</div>);
+        }
+
+        return <div className="text-container">{lines}</div>;
     };
     
     const PDFDocument: React.FC<{ data: storyInterface; storyLines: string[] }> = ({ data, storyLines }) => (
@@ -119,7 +154,7 @@ const StartStory: React.FC = () => {
                                         style={pdf_styles.storyImage}
                                     />
                                     <Text style={pdf_styles.storyText}>
-                                        {formatText(storyLines[index] || '', 27)}
+                                        {formatText(storyLines[index] || '', zhuyinData?.zhuyin)}
                                     </Text>
                                 </View>
                                 {data.image_base64 && data.image_base64[index + 1] && (
@@ -129,7 +164,7 @@ const StartStory: React.FC = () => {
                                             style={pdf_styles.storyImage}
                                         />
                                         <Text style={pdf_styles.storyText}>
-                                            {formatText(storyLines[index + 1] || '', 27)}
+                                            {formatText(storyLines[index + 1] || '', zhuyinData?.zhuyin)}
                                         </Text>
                                     </View>
                                 )}
@@ -174,6 +209,10 @@ const StartStory: React.FC = () => {
                 if (storyId) {
                     setLoading(true);
                     const storyData = await StartStory_api(storyId);
+                    const zhuyinResult = await makeZhuyin(storyData.storyTale);
+                    zhuyinResult.zhuyin[2][0]='ㄌˇㄠ'
+
+                    setZhuyinData(zhuyinResult);
                     setData(storyData);
                     setLoading(false);
                 } else {
@@ -310,8 +349,12 @@ const StartStory: React.FC = () => {
                         className="demo-book"
                         ref={bookRef}
                     >
-                        {data.image_base64 && data.image_base64.map((image, index) => (
-                            <Pageflip key={index} image={image} text={storyLines[index] || ''} />
+                        {data?.image_base64 && data.image_base64.map((image, index) => (
+                            <Pageflip 
+                                key={index} 
+                                image={image} 
+                                text={formatText(storyLines[index] || '', zhuyinData?.zhuyin)} 
+                            />
                         ))}
                     </HTMLFlipBook>
                     <div className="navigation-container">

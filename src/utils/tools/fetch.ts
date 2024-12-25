@@ -68,6 +68,35 @@ export async function StartStory_api(storyIdinput: string): Promise<any> {
     }
 }
 
+export async function makeZhuyin(storyTale: string): Promise<any> {
+    if (!storyTale) {
+        return { error: true, message: '文字不能為空' };
+    }
+
+    try {
+        const response = await fetch(apis.makeZhuyin, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ text: storyTale })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`makeZhuyin API responded with status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('makeZhuyin error:', error);
+        return {
+            error: true,
+            message: error instanceof Error ? error.message : '轉換注音失敗'
+        };
+    }
+}
+
 export async function GetVoice(storyId: string, pageIndex: number): Promise<Blob | null> {
     try {
         const playload = {

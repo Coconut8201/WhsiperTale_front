@@ -257,3 +257,54 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap');
+}
+
+.text-container {
+    margin-top: 10px;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+.text-line {
+    margin-bottom: 1em;
+    line-height: 2em;
+}
+
+ruby {
+    ruby-position: inter-character;
+    position: relative;
+    display: inline-block;
+    margin-right: 1.2em;
+    font-feature-settings: "ruby" on;
+}
+
+rt {
+    text-orientation: upright;
+    font-size: 30%;
+    position: absolute;
+    left: 120%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.5em;
+    color: #666;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-feature-settings: "ruby" on;
+    -webkit-font-feature-settings: "ruby" on;
+    font-variant-east-asian: ruby;
+}
+
+@font-face {
+    font-family: 'BopomofoPro';
+    src: url('/font/Bopomofo Ruby 1909 Regular.ttf') format('truetype');
+}
+
+body {
+    font-family: BopomofoPro, serif;
+}

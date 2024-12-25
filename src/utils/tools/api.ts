@@ -22,6 +22,7 @@ export const enum apis {
     GetStoryList = `https://163.13.202.128/api/story/getstorylist_fdb`,
     LLMGenStory = `https://163.13.202.128/api/story/llm/genstory`,
     GenImagePrompt = `https://163.13.202.128/api/story/llm/genimageprompt`,
+    makeZhuyin = "https://163.13.202.128/api/story/makezhuyin",
     GetVoice = `https://163.13.202.128/api/voiceset/take_voice`,
     GetNewaudio = `https://163.13.202.128/audio`,
     getAllSDModel = `https://163.13.202.128/sd/sdapi/v1/sd-models`,

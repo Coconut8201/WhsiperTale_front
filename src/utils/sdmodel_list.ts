@@ -5,6 +5,15 @@ export interface sdmodel{
 }
 
 export const sdmodel_list: sdmodel[] = [
+    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
+    { sd_name: "J_drawing XL.safetensors [331bc3032b]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
+    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
+    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
+    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
+    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
+
+
+
     { sd_name: "pastelMixStylizedAnime_pastelMixPrunedFP16.safetensors [d01a68ae76]", show_name: "水彩風格", image_path: "/src/images/pastelMixStylizedAnime_pastelMixPrunedFP16.png"},
     { sd_name: "flux_dev.safetensors [4610115bb0]", show_name: "繪畫風格", image_path: "/src/images/flux_dev.png"},
     { sd_name: "flux_dev.safetensors [4610115bb0]", show_name: "可愛卡通風格", image_path: "/src/images/picture_booksChildren_cartoon.jpeg"}, // <lora:children huiben11-20231007:1>
