@@ -58,7 +58,7 @@ interface PdfTestProps {
 }
 interface PageflipProps {
     image: string;
-    text: string;
+    text: JSX.Element | string;
 }
 
 const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text }, ref) => {
@@ -107,16 +107,19 @@ const StartStory: React.FC = () => {
             return <span>{text}</span>;
         }
 
+        console.log('文字：', text);
+        console.log('注音陣列：', zhuyinArray);
+
         let currentPosition = 0;
         let currentLine: JSX.Element[] = [];
         let lines: JSX.Element[] = [];
         let lineLength = 0;
 
-        // 將文字和注音組合在一起
         const combinedElements = text.split('').map((char, index) => {
             const zhuyin = zhuyinArray[index]?.join('') || '';
             return (
-                <ruby key={index}>
+                <ruby key={index} 
+                      onClick={() => console.log(`字：${char}, 注音：${zhuyin}, 位置：${index}`)}>
                     {char}<rt>{zhuyin}</rt>
                 </ruby>
             );
@@ -210,8 +213,6 @@ const StartStory: React.FC = () => {
                     setLoading(true);
                     const storyData = await StartStory_api(storyId);
                     const zhuyinResult = await makeZhuyin(storyData.storyTale);
-                    zhuyinResult.zhuyin[2][0]='ㄌˇㄠ'
-
                     setZhuyinData(zhuyinResult);
                     setData(storyData);
                     setLoading(false);
@@ -365,6 +366,18 @@ const StartStory: React.FC = () => {
                 </div>
             ) : (
                 <p>No data available</p>
+            )}
+            {!loading && zhuyinData && (
+                <div style={{ 
+                    position: 'fixed', 
+                    top: '10px', 
+                    right: '10px', 
+                    background: 'rgba(255,255,255,0.9)', 
+                    padding: '10px',
+                    border: '1px solid #ccc',
+                    zIndex: 1000
+                }}>
+                </div>
             )}
         </div>
     );
