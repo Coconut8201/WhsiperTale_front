@@ -68,7 +68,7 @@ export async function StartStory_api(storyIdinput: string): Promise<any> {
     }
 }
 
-export async function makeZhuyin(storyTale: string): Promise<any> {
+export async function makeZhuyin(storyTale: string): Promise<string[][] | { error: boolean, message: string }> {
     if (!storyTale) {
         return { error: true, message: '文字不能為空' };
     }
@@ -87,7 +87,8 @@ export async function makeZhuyin(storyTale: string): Promise<any> {
             throw new Error(`makeZhuyin API responded with status: ${response.status}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        return data.zhuyin;
     } catch (error) {
         console.error('makeZhuyin error:', error);
         return {

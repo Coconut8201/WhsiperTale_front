@@ -79,8 +79,7 @@ const LoadingSpinner: React.FC = () => (
 );
 
 interface StoryWithZhuyin {
-    original: string;
-    zhuyin: string[][];
+    zhuyin: string[][] | { error: boolean; message: string };
 }
 
 const StartStory: React.FC = () => {
@@ -95,35 +94,67 @@ const StartStory: React.FC = () => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const bookRef = useRef<any>(null);
-    const [zhuyinData, setZhuyinData] = useState<StoryWithZhuyin | null>(null);
+    const [zhuyinData, setZhuyinData] = useState<StoryWithZhuyin[]>([]);
 
     const storyLines = useMemo(() => {
         if (!data?.storyTale) return [];
-        return data.storyTale.split('\n\n').map(line => line.trim());
+        const lines = data.storyTale.split('\n\n').map(line => line.trim());
+        
+        // 為每一行分別取得注音
+        const fetchZhuyinForLines = async () => {
+            try {
+                const zhuyinPromises = lines.map(line => makeZhuyin(line));
+                const zhuyinResults = await Promise.all(zhuyinPromises);
+                console.log('zhuyinResults：', zhuyinResults);
+
+                // zhuyinResults.forEach(result => {
+                //     if (result.zhuyin) {
+                //         // 處理注音
+                //         const processedZhuyin = result.zhuyin.map((charZhuyin: string[], index: number) => {
+                //             if (charZhuyin[0].replace(/\n/g, '') === result.original[index]) {
+                //                 return [];
+                //             }
+                //             return charZhuyin;
+                //         });
+                        
+                //         // 合併結果
+                //         combinedZhuyin.original += result.original;
+                //         combinedZhuyin.zhuyin.push(...processedZhuyin);
+                //     }
+                // });
+                const formattedZhuyinResults = zhuyinResults.map(result => ({
+                    zhuyin: result
+                }));
+                setZhuyinData(formattedZhuyinResults);
+            } catch (error) {
+                console.error('Error fetching zhuyin:', error);
+            }
+        };
+        
+        fetchZhuyinForLines();
+        return lines;
     }, [data?.storyTale]);
 
-    const formatText = (text: string, zhuyinArray: string[][] | undefined, maxLineLength: number = 23): JSX.Element => {
-        if (!zhuyinArray) {
+    const formatText = (text: string, index: number, maxLineLength: number = 23): JSX.Element => {
+        if (!zhuyinData?.[index] || 'error' in zhuyinData[index].zhuyin) {
             return <span>{text}</span>;
         }
 
-        console.log('文字：', text);
-        console.log('注音陣列：', zhuyinArray);
+        const zhuyinArray = (zhuyinData[index].zhuyin as string[][]);
+        
+        const combinedElements = text.split('').map((char, charIndex) => {
+            const zhuyin = zhuyinArray[charIndex]?.join('') || '';
+            return (
+                <ruby key={charIndex}>
+                    {char}<rt>{zhuyin}</rt>
+                </ruby>
+            );
+        });
 
         let currentPosition = 0;
         let currentLine: JSX.Element[] = [];
         let lines: JSX.Element[] = [];
         let lineLength = 0;
-
-        const combinedElements = text.split('').map((char, index) => {
-            const zhuyin = zhuyinArray[index]?.join('') || '';
-            return (
-                <ruby key={index} 
-                      onClick={() => console.log(`字：${char}, 注音：${zhuyin}, 位置：${index}`)}>
-                    {char}<rt>{zhuyin}</rt>
-                </ruby>
-            );
-        });
 
         // 處理換行
         combinedElements.forEach((element, index) => {
@@ -157,7 +188,7 @@ const StartStory: React.FC = () => {
                                         style={pdf_styles.storyImage}
                                     />
                                     <Text style={pdf_styles.storyText}>
-                                        {formatText(storyLines[index] || '', zhuyinData?.zhuyin)}
+                                        {formatText(storyLines[index] || '', index)}
                                     </Text>
                                 </View>
                                 {data.image_base64 && data.image_base64[index + 1] && (
@@ -167,7 +198,7 @@ const StartStory: React.FC = () => {
                                             style={pdf_styles.storyImage}
                                         />
                                         <Text style={pdf_styles.storyText}>
-                                            {formatText(storyLines[index + 1] || '', zhuyinData?.zhuyin)}
+                                            {formatText(storyLines[index + 1] || '', index)}
                                         </Text>
                                     </View>
                                 )}
@@ -211,19 +242,7 @@ const StartStory: React.FC = () => {
             try {
                 if (storyId) {
                     setLoading(true);
-                    const storyData = await StartStory_api(storyId);
-                    const zhuyinResult = await makeZhuyin(storyData.storyTale);
-                    
-                    if (zhuyinResult.zhuyin) {
-                        zhuyinResult.zhuyin = zhuyinResult.zhuyin.map((charZhuyin: string[], index: number) => {
-                            if (charZhuyin[0].replace(/\n/g, '') === zhuyinResult.original[index]) {
-                                return [];
-                            }
-                            return charZhuyin;
-                        });
-                    }
-                    
-                    setZhuyinData(zhuyinResult);
+                    const storyData = await StartStory_api(storyId);                    
                     setData(storyData);
                     setLoading(false);
                 } else {
@@ -364,7 +383,7 @@ const StartStory: React.FC = () => {
                             <Pageflip 
                                 key={index} 
                                 image={image} 
-                                text={formatText(storyLines[index] || '', zhuyinData?.zhuyin)} 
+                                text={formatText(storyLines[index] || '', index)} 
                             />
                         ))}
                     </HTMLFlipBook>
