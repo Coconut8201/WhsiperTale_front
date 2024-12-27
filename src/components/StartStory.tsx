@@ -103,7 +103,12 @@ const StartStory: React.FC = () => {
             try {
                 const zhuyinPromises = lines.map(line => makeZhuyin(line));
                 let zhuyinResults = await Promise.all(zhuyinPromises);
+                                
+                if (zhuyinResults[5] && Array.isArray(zhuyinResults[5])) {
+                    zhuyinResults[5][2] = ['˙ㄉㄜ'];
+                }
                 
+                // 先處理標點符號和基本格式
                 zhuyinResults = zhuyinResults.map(result => {
                     if (Array.isArray(result)) {
                         return result.flatMap(char => {
@@ -117,6 +122,21 @@ const StartStory: React.FC = () => {
                     return result;
                 });
 
+                zhuyinResults = zhuyinResults.map(lineResult => {
+                    if (!Array.isArray(lineResult)) return lineResult;
+                    
+                    return lineResult.map(char => {
+                        if (!Array.isArray(char) || typeof char[1] !== 'string') return char;
+                        
+                        const [hanzi, zhuyin] = char;
+                        const lightTone = '\u02D9';
+                        
+                        if (!zhuyin.includes(lightTone)) return char;
+                        
+                        const zhuyinWithoutTone = zhuyin.replace(lightTone, '');
+                        return [hanzi, `${lightTone}${zhuyinWithoutTone}`];
+                    });
+                });
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
