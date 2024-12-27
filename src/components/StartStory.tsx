@@ -65,7 +65,7 @@ const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text }, ref
     return (
         <div className="pagefilp" ref={ref}>
             <img src={`data:image/png;base64,${image}`} alt="Story image" className="story-image" />
-            <pre className="pre"><br />{text}</pre>
+            <pre className="pre">{text}</pre>
         </div>
     );
 });
