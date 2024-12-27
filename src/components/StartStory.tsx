@@ -145,7 +145,8 @@ const StartStory: React.FC = () => {
             const zhuyin = isPunctuation ? '' : (zhuyinArray[charIndex]?.join('') || '');
             return (
                 <ruby key={i}>
-                    {char}{zhuyin && <rt>{zhuyin}</rt>}
+                    {char}
+                    {zhuyin && <rt>{zhuyin}</rt>}
                 </ruby>
             );
         });

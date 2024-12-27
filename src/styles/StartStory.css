@@ -277,8 +277,17 @@ ruby {
     ruby-position: inter-character;
     position: relative;
     display: inline-block;
-    margin-right: 1.2em;
     font-feature-settings: "ruby" on;
+}
+
+/* 只有當 ruby 內有 rt 時才套用較大的 margin */
+ruby:has(rt) {
+    margin-right: 1.2em;
+}
+
+/* 沒有 rt 的 ruby 使用較小的 margin */
+ruby:not(:has(rt)) {
+    margin-right: 0.2em;
 }
 
 rt {
