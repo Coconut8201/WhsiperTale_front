@@ -1,11 +1,3 @@
-/* styles.css */
-/*.container {
-    height: 862px;
-    width: 1440px;
-    margin: 0 auto; /* 使容器居中 
-    background-color: RGB(231,232,238);
-
-}*/
 .non-editable {
     cursor: not-allowed;
 }

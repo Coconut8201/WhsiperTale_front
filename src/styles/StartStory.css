@@ -13,13 +13,12 @@
     position: relative;
 }
 
-/* 返回和播放音頻按鈕的樣式 */
 .button-back,
 .button-audio {
     color: #ffffff;
     text-align: center;
     font-family: 'Microsoft Sans Serif', sans-serif;
-    font-size: 1rem; /* 相對單位 */
+    font-size: 1rem;
     font-weight: 400;
     width: 6rem;
     height: 3rem;
@@ -259,7 +258,7 @@
 
 @font-face {
     font-family: 'Noto Sans TC';
-    src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap');
+    src: url('/Assets/NotoSansTC-VariableFont_wght.ttf');
 }
 
 .text-container {
@@ -308,11 +307,16 @@ rt {
     font-variant-east-asian: ruby;
 }
 
+
 @font-face {
     font-family: 'BopomofoPro';
     src: url('/font/Bopomofo Ruby 1909 Regular.ttf') format('truetype');
 }
 
-body {
-    font-family: BopomofoPro, serif;
+.start-story-container {
+    font-family: 'BopomofoPro', serif;
+}
+
+.bopomofo-text {
+    font-family: 'BopomofoPro', serif;
 }
