@@ -246,8 +246,7 @@ const StartStory: React.FC = () => {
 
         return (
             <div className="download-container">
-                <p className='p-size'>下載pdf檔案</p>
-                <button className='button-Previous-Next-Page' onClick={generatePDF}>下載</button>
+                <button className='button-Previous-Next-Page' onClick={generatePDF}>下載pdf檔案</button>
             </div>
         );
     };
