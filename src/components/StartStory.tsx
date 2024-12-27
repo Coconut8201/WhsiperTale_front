@@ -70,7 +70,6 @@ const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text }, ref
     );
 });
 
-// 添加 loading 動畫的樣式
 const LoadingSpinner: React.FC = () => (
     <div className="loading-spinner">
         <div className="spinner"></div>
@@ -105,7 +104,6 @@ const StartStory: React.FC = () => {
                 const zhuyinPromises = lines.map(line => makeZhuyin(line));
                 let zhuyinResults = await Promise.all(zhuyinPromises);
                 
-                // 在這裡處理 zhuyinResults
                 zhuyinResults = zhuyinResults.map(result => {
                     if (Array.isArray(result)) {
                         return result.flatMap(char => {
@@ -119,7 +117,6 @@ const StartStory: React.FC = () => {
                     return result;
                 });
 
-                console.log('處理後的 zhuyinResults：', zhuyinResults);
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
@@ -157,7 +154,6 @@ const StartStory: React.FC = () => {
         let lines: JSX.Element[] = [];
         let lineLength = 0;
 
-        // 處理換行
         combinedElements.forEach((element, index) => {
             currentLine.push(element);
             lineLength++;
@@ -211,9 +207,6 @@ const StartStory: React.FC = () => {
             }
         </Document>
     );
-    
-    
-
 
     const PdfTest: React.FC<PdfTestProps> = ({ data, storyLines }) => {
         const generatePDF = async () => {
@@ -261,14 +254,12 @@ const StartStory: React.FC = () => {
         const fetchAudio = async () => {
             try {
                 if (storyId) {
-                    // 停止當前播放的音頻
                     if (audioRef.current) {
                         audioRef.current.pause();
                         audioRef.current.currentTime = 0;
                         setIsPlaying(false);
                     }
                     
-                    // 修改：只有當 pageIndex >= 1 時才獲取音頻
                     if (pageIndex >= 1) {
                         const audioBlob = await GetVoice(storyId, Math.floor((pageIndex - 1) / 2) + 1);
                         if (audioBlob) {
@@ -289,7 +280,6 @@ const StartStory: React.FC = () => {
         };
         fetchAudio();
 
-        // 清理函數
         return () => {
             if (audioRef.current) {
                 audioRef.current.pause();
