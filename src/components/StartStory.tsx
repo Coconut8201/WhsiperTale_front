@@ -108,13 +108,12 @@ const StartStory: React.FC = () => {
                 // 在這裡處理 zhuyinResults
                 zhuyinResults = zhuyinResults.map(result => {
                     if (Array.isArray(result)) {
-                        return result.map(char => {
+                        return result.flatMap(char => {
                             const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
-                            // 如果是標點符號，返回空陣列
                             if (chinesePunctuationRegex.test(char[0])) {
-                                return [];
+                                return Array(char[0].length).fill([]);
                             }
-                            return char;
+                            return [char];
                         });
                     }
                     return result;
@@ -141,12 +140,15 @@ const StartStory: React.FC = () => {
 
         const zhuyinArray = (zhuyinData[index].zhuyin as string[][]);
         
-        const combinedElements = text.split('').map((char, charIndex) => {
+        const combinedElements = text.split('').map((char, i) => {
+            let charIndex = i;
             const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
-            const zhuyin = chinesePunctuationRegex.test(char) ? '' : (zhuyinArray[charIndex]?.join('') || '');
+            const isPunctuation = chinesePunctuationRegex.test(char);
+
+            const zhuyin = isPunctuation ? '' : (zhuyinArray[charIndex]?.join('') || '');
             return (
-                <ruby key={charIndex}>
-                    {char}<rt>{zhuyin}</rt>
+                <ruby key={i}>
+                    {char}{zhuyin && <rt>{zhuyin}</rt>}
                 </ruby>
             );
         });
