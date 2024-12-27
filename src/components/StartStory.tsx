@@ -103,10 +103,6 @@ const StartStory: React.FC = () => {
             try {
                 const zhuyinPromises = lines.map(line => makeZhuyin(line));
                 let zhuyinResults = await Promise.all(zhuyinPromises);
-                                
-                if (zhuyinResults[5] && Array.isArray(zhuyinResults[5])) {
-                    zhuyinResults[5][2] = ['˙ㄉㄜ'];
-                }
                 
                 // 先處理標點符號和基本格式
                 zhuyinResults = zhuyinResults.map(result => {
@@ -116,27 +112,20 @@ const StartStory: React.FC = () => {
                             if (chinesePunctuationRegex.test(char[0])) {
                                 return Array(char[0].length).fill([]);
                             }
+                            // 處理輕聲符號
+                            if (char[0] && char[0].includes('\u02D9')) {
+                                console.log('here')
+                                const zhuyinArr = char[0].split('');
+                                const lightToneIndex = zhuyinArr.indexOf('\u02D9');
+                                zhuyinArr.splice(lightToneIndex, 1);
+                                char[0] = '\u02D9' + zhuyinArr.join('');
+                            }
                             return [char];
                         });
                     }
                     return result;
                 });
-
-                zhuyinResults = zhuyinResults.map(lineResult => {
-                    if (!Array.isArray(lineResult)) return lineResult;
-                    
-                    return lineResult.map(char => {
-                        if (!Array.isArray(char) || typeof char[1] !== 'string') return char;
-                        
-                        const [hanzi, zhuyin] = char;
-                        const lightTone = '\u02D9';
-                        
-                        if (!zhuyin.includes(lightTone)) return char;
-                        
-                        const zhuyinWithoutTone = zhuyin.replace(lightTone, '');
-                        return [hanzi, `${lightTone}${zhuyinWithoutTone}`];
-                    });
-                });
+                console.log('zhuyinResults:', zhuyinResults);
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
