@@ -114,7 +114,6 @@ const StartStory: React.FC = () => {
                             }
                             // 處理輕聲符號
                             if (char[0] && char[0].includes('\u02D9')) {
-                                console.log('here')
                                 const zhuyinArr = char[0].split('');
                                 const lightToneIndex = zhuyinArr.indexOf('\u02D9');
                                 zhuyinArr.splice(lightToneIndex, 1);
@@ -125,7 +124,7 @@ const StartStory: React.FC = () => {
                     }
                     return result;
                 });
-                console.log('zhuyinResults:', zhuyinResults);
+                // console.log('zhuyinResults:', zhuyinResults);
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
