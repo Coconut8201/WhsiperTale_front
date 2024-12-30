@@ -5,23 +5,12 @@ export interface sdmodel{
 }
 
 export const sdmodel_list: sdmodel[] = [
-    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
-    { sd_name: "J_drawing XL.safetensors [331bc3032b]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
-    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
-    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
-    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
-    { sd_name: "J_illustration.safetensors [563e7ba885]", show_name: "水彩風格", image_path: "src/images/J_illustration.jpeg"},
-
-
-
-    { sd_name: "pastelMixStylizedAnime_pastelMixPrunedFP16.safetensors [d01a68ae76]", show_name: "水彩風格", image_path: "/src/images/pastelMixStylizedAnime_pastelMixPrunedFP16.png"},
-    { sd_name: "flux_dev.safetensors [4610115bb0]", show_name: "繪畫風格", image_path: "/src/images/flux_dev.png"},
-    { sd_name: "flux_dev.safetensors [4610115bb0]", show_name: "可愛卡通風格", image_path: "/src/images/picture_booksChildren_cartoon.jpeg"}, // <lora:children huiben11-20231007:1>
-    { sd_name: 'cartoonmix_v10.safetensors [730ecbe46a]', show_name: '3D卡通風格', image_path: '/src/images/cartoonmix_v10_image.jpeg' },
-    { sd_name: 'disneyPixarCartoon_v10.safetensors', show_name: '皮克斯、迪士尼卡通風格', image_path: '/src/images/disneyPixarCartoon_v10_image.jpeg' },
-    { sd_name: 'cuteCATCuteCitron_v2.safetensors [c75902b553]', show_name: 'Q版漫畫風格', image_path: '/src/images/cuteCATCuteCitron_v2_image.jpeg' },
-    { sd_name: 'fantasyWorld_v10.safetensors', show_name: '奇幻風格', image_path: '/src/images/fantasyWorld_v10_image.jpeg' },
-    { sd_name: 'flat2DAnimerge_v45Sharp.safetensors', show_name: '2D動漫風格', image_path: '/src/images/flat2DAnimerge_v45Sharp_image.jpeg' },
+    { sd_name: "zbaseHighQualityAesthetic_sdxlV30.safetensors", show_name: "奇幻卡通風格", image_path: "src/images/Illustrious_Storybook_Landscapes_Animals.png"},  
+    { sd_name: "realisticVisionV60B1_v51HyperVAE.safetensors [f47e942ad4", show_name: "寫實風格", image_path: "src/images/Realistic_Vision.png"},
+    { sd_name: "AnythingV5V3_v5PrtRE.safetensors", show_name: "可愛卡通風格", image_path: "src/images/J_ill.png"},
+    { sd_name: "sdXL_v10VAEFix.safetensors [e6bb9ea85b]", show_name: "卡通繪本風格", image_path: "src/images/StorybookRedmond.png"}, 
+    { sd_name: "sdxlUnstableDiffusers_v11Rundiffusion.safetensors [dda8c0514c]", show_name: "手繪風格", image_path: "src/images/Storybook_Illustration_Style.png"},
+    { sd_name: "sdXL_v10VAEFix.safetensors [e6bb9ea85b]", show_name: "立體卡通風格", image_path: "src/images/3dCartoon.png"},
 ]
 
 export interface bookManageList {
