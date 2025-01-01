@@ -124,7 +124,7 @@ const StartStory: React.FC = () => {
                     }
                     return result;
                 });
-                // console.log('zhuyinResults:', zhuyinResults);
+                console.log('zhuyinResults:', zhuyinResults);
                 const formattedZhuyinResults = zhuyinResults.map(result => ({
                     zhuyin: result
                 }));
