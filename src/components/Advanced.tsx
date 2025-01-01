@@ -6,7 +6,7 @@ import "../styles/Advanced.css";
 import { roleRelative } from "../utils/tools/roleRelateList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faMicrophone, faStop } from '@fortawesome/free-solid-svg-icons';
-
+import aa from '../images/illustrious_storybook_landscapes_animals.png';
 const options: sdmodel[] = sdmodel_list;
 
 // 添加類型定義
@@ -35,7 +35,7 @@ const Advanced: React.FC = () => {
   const [isLoad, setIsLoad] = useState<string>(""); // 是否在生成圖片
   const [reLoad, setReLoad] = useState<boolean>(false); // 重新生成圖片控制器
   const [imageSrc, setImageSrc] = useState<string>(
-    "src/images/ChineseInkComicStrip_v10_image.jpeg"
+    "src/images/StorybookRedmond.png"
   );
   const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>("");
@@ -151,7 +151,6 @@ const Advanced: React.FC = () => {
     const targetImage = options.find(
       (model) => model.show_name === selectedStyle
     );
-    console.log(`targetImage = ${JSON.stringify(targetImage)}`);
     if (targetImage) {
       setImageSrc(targetImage.image_path);
     }
