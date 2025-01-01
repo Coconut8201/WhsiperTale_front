@@ -6,7 +6,6 @@ import "../styles/Advanced.css";
 import { roleRelative } from "../utils/tools/roleRelateList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faMicrophone, faStop } from '@fortawesome/free-solid-svg-icons';
-import aa from '../images/illustrious_storybook_landscapes_animals.png';
 const options: sdmodel[] = sdmodel_list;
 
 // 添加類型定義
@@ -32,8 +31,8 @@ const Advanced: React.FC = () => {
   const [characters, setCharacters] = useState<string[]>([""]);
   const [storyId, setStoryId] = useState<string>("66a52f72b5993b79132a3fac");
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
-  const [isLoad, setIsLoad] = useState<string>(""); // 是否在生成圖片
-  const [reLoad, setReLoad] = useState<boolean>(false); // 重新生成圖片控制器
+  const [isLoad, setIsLoad] = useState<string>("");         // 是否在生成圖片
+  const [reLoad, setReLoad] = useState<boolean>(false);     // 重新生成圖片控制器
   const [imageSrc, setImageSrc] = useState<string>(
     "src/images/StorybookRedmond.png"
   );
@@ -119,10 +118,9 @@ const Advanced: React.FC = () => {
       mainCharacter: character1,
       description,
       otherCharacters: characters.filter((character) => character !== ""),
+      sdModelId: targetModel?.sdModelId || "",
       relationships: formattedRelationship,
     };
-
-    console.log(`RoleForm = ${JSON.stringify(data)}`);
 
     const result = await GenStory(data, selectedVoice);
     setIsLoad("finish"); // 設置為finish狀態
