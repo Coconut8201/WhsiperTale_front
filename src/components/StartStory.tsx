@@ -370,7 +370,7 @@ const StartStory: React.FC = () => {
                         style={{}}
                         startPage={0}
                         width={600}
-                        height={700}
+                        height={800}
                         drawShadow={true}
                         flippingTime={10}
                         usePortrait={false}
