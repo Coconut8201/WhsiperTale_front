@@ -59,12 +59,29 @@ interface PdfTestProps {
 interface PageflipProps {
     image: string;
     text: JSX.Element | string;
+    isLeft?: boolean;
+    isSpreadImage?: boolean;
 }
 
-const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text }, ref) => {
+const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text, isLeft = true, isSpreadImage = false }, ref) => {
     return (
         <div className="pagefilp" ref={ref}>
-            <img src={`data:image/png;base64,${image}`} alt="Story image" className="story-image" />
+            <div style={{ 
+                width: '100%',
+                overflow: 'hidden',
+                position: 'relative'
+            }}>
+                <img 
+                    src={`data:image/png;base64,${image}`}
+                    alt="Story image" 
+                    style={{ 
+                        width: isSpreadImage ? '200%' : '100%',
+                        height: 'auto',
+                        display: 'block',
+                        transform: isSpreadImage && !isLeft ? 'translateX(-50%)' : 'none'
+                    }}
+                />
+            </div>
             <pre className="pre">{text}</pre>
         </div>
     );
@@ -378,13 +395,43 @@ const StartStory: React.FC = () => {
                         className="demo-book"
                         ref={bookRef}
                     >
-                        {data?.image_base64 && data.image_base64.map((image, index) => (
+                        {data?.image_base64 && [
+                            // 首頁
                             <Pageflip 
-                                key={index} 
-                                image={image} 
-                                text={formatText(storyLines[index] || '', index)} 
-                            />
-                        ))}
+                                key="page-cover"
+                                image={data.image_base64[0]} 
+                                text={formatText(storyLines[0] || '', 0)}
+                                isLeft={false}
+                                isSpreadImage={false}
+                            />,
+                            // 其餘頁面
+                            ...data.image_base64.slice(1).map((_, index) => {
+                                const imageIndex = Math.floor(index / 2) + 1; // +1 因為首頁已經使用了第一張圖
+                                const currentImage = data?.image_base64?.[imageIndex];
+                                
+                                if (!currentImage) return null;
+                                
+                                if (index % 2 === 0) {
+                                    return [
+                                        <Pageflip 
+                                            key={`page-${index}-left`}
+                                            image={currentImage} 
+                                            text={''}
+                                            isLeft={true}
+                                            isSpreadImage={true}
+                                        />,
+                                        <Pageflip 
+                                            key={`page-${index}-right`}
+                                            image={currentImage} 
+                                            text={formatText(storyLines[imageIndex] || '', imageIndex)}
+                                            isLeft={false}
+                                            isSpreadImage={true}
+                                        />
+                                    ];
+                                }
+                                return null;
+                            }).filter(Boolean)
+                        ]}
                     </HTMLFlipBook>
                     <div className="navigation-container">
                         <button className='navigation-button' onClick={handlePrevPage}>上一頁</button>
