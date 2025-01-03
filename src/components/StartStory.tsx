@@ -66,15 +66,15 @@ interface PageflipProps {
 const Pageflip = forwardRef<HTMLDivElement, PageflipProps>(({ image, text, isLeft = true, isSpreadImage = false }, ref) => {
     return (
         <div className="pagefilp" ref={ref}>
-            <div style={{ 
+            <div style={{
                 width: '100%',
                 overflow: 'hidden',
                 position: 'relative'
             }}>
-                <img 
+                <img
                     src={`data:image/png;base64,${image}`}
-                    alt="Story image" 
-                    style={{ 
+                    alt="Story image"
+                    style={{
                         width: isSpreadImage ? '200%' : '100%',
                         height: 'auto',
                         display: 'block',
@@ -115,12 +115,12 @@ const StartStory: React.FC = () => {
     const storyLines = useMemo(() => {
         if (!data?.storyTale) return [];
         const lines = data.storyTale.split('\n\n').map(line => line.trim());
-        
+
         const fetchZhuyinForLines = async () => {
             try {
                 const zhuyinPromises = lines.map(line => makeZhuyin(line));
                 let zhuyinResults = await Promise.all(zhuyinPromises);
-                
+
                 // 先處理標點符號和基本格式
                 zhuyinResults = zhuyinResults.map(result => {
                     if (Array.isArray(result)) {
@@ -150,7 +150,7 @@ const StartStory: React.FC = () => {
                 console.error('Error fetching zhuyin:', error);
             }
         };
-        
+
         fetchZhuyinForLines();
         return lines;
     }, [data?.storyTale]);
@@ -161,7 +161,7 @@ const StartStory: React.FC = () => {
         }
 
         const zhuyinArray = (zhuyinData[index].zhuyin as string[][]);
-        
+
         const combinedElements = text.split('').map((char, i) => {
             let charIndex = i;
             const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
@@ -197,7 +197,7 @@ const StartStory: React.FC = () => {
 
         return <div className="text-container">{lines}</div>;
     };
-    
+
     const PDFDocument: React.FC<{ data: storyInterface; storyLines: string[] }> = ({ data, storyLines }) => (
         <Document>
             {data && data.image_base64 && data.image_base64.length > 0 &&
@@ -261,7 +261,7 @@ const StartStory: React.FC = () => {
             try {
                 if (storyId) {
                     setLoading(true);
-                    const storyData = await StartStory_api(storyId);                    
+                    const storyData = await StartStory_api(storyId);
                     setData(storyData);
                     setLoading(false);
                 } else {
@@ -284,9 +284,9 @@ const StartStory: React.FC = () => {
                         audioRef.current.currentTime = 0;
                         setIsPlaying(false);
                     }
-                    
+
                     if (pageIndex >= 1) {
-                        const audioBlob = await GetVoice(storyId, Math.floor((pageIndex - 1) / 2) + 1);
+                        const audioBlob = await GetVoice(storyId, pageIndex);
                         if (audioBlob) {
                             const audioUrl = URL.createObjectURL(audioBlob);
                             if (audioRef.current) {
@@ -397,39 +397,35 @@ const StartStory: React.FC = () => {
                     >
                         {data?.image_base64 && [
                             // 首頁
-                            <Pageflip 
+                            <Pageflip
                                 key="page-cover"
-                                image={data.image_base64[0]} 
+                                image={data.image_base64[0]}
                                 text={formatText(storyLines[0] || '', 0)}
                                 isLeft={false}
                                 isSpreadImage={false}
                             />,
                             // 其餘頁面
                             ...data.image_base64.slice(1).map((_, index) => {
-                                const imageIndex = Math.floor(index / 2) + 1; // +1 因為首頁已經使用了第一張圖
+                                const imageIndex = index + 1; // +1 因為首頁已經使用了第一張圖
                                 const currentImage = data?.image_base64?.[imageIndex];
-                                
+
                                 if (!currentImage) return null;
-                                
-                                if (index % 2 === 0) {
-                                    return [
-                                        <Pageflip 
-                                            key={`page-${index}-left`}
-                                            image={currentImage} 
-                                            text={''}
-                                            isLeft={true}
-                                            isSpreadImage={true}
-                                        />,
-                                        <Pageflip 
-                                            key={`page-${index}-right`}
-                                            image={currentImage} 
-                                            text={formatText(storyLines[imageIndex] || '', imageIndex)}
-                                            isLeft={false}
-                                            isSpreadImage={true}
-                                        />
-                                    ];
-                                }
-                                return null;
+                                return [
+                                    <Pageflip
+                                        key={`page-${index}-left`}
+                                        image={currentImage}
+                                        text={''}
+                                        isLeft={true}
+                                        isSpreadImage={true}
+                                    />,
+                                    <Pageflip
+                                        key={`page-${index}-right`}
+                                        image={currentImage}
+                                        text={formatText(storyLines[imageIndex] || '', imageIndex)}
+                                        isLeft={false}
+                                        isSpreadImage={true}
+                                    />
+                                ];
                             }).filter(Boolean)
                         ]}
                     </HTMLFlipBook>
