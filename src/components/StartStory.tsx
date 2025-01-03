@@ -286,7 +286,7 @@ const StartStory: React.FC = () => {
                     }
 
                     if (pageIndex >= 1) {
-                        const audioBlob = await GetVoice(storyId, pageIndex);
+                        const audioBlob = await GetVoice(storyId, pageIndex/2);
                         if (audioBlob) {
                             const audioUrl = URL.createObjectURL(audioBlob);
                             if (audioRef.current) {
@@ -315,7 +315,7 @@ const StartStory: React.FC = () => {
     }, [storyId, pageIndex]);
 
     const handleNextPage = () => {
-        if (data && data.image_base64 && pageIndex < data.image_base64.length - 2) {
+        if (data && data.image_base64) {
             if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.currentTime = 0;
