@@ -209,6 +209,9 @@ const Advanced: React.FC = () => {
       </div>
       <div className="header text-center py-3">
         <div className="header-content">WHISPER TALES</div>
+        <button onClick={() => navigate('/style')} className="login">
+          返回故事生成
+        </button>
       </div>
       <div className="content-container">
         <div className="form-section">
