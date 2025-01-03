@@ -295,7 +295,7 @@ body, html {
 
 .header-content {
   margin-left: 64px; /* 内部内容離左邊64像素 */
-  width: calc(100% - 64px); /* 確保内部内容的寬度 */
+  width: calc(100% - 70px); /* 確保内部内容的寬度 */
   font-size: 24px;
   font-weight: bold;
   display: flex;

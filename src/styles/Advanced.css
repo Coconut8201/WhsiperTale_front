@@ -486,9 +486,9 @@ textarea {
   text-overflow: ellipsis;
 }
 
-.login {
+.login-in {
   height: 50px;
-  width: 170px;
+  width: 180px;
   font-size: 15px;
   padding: 10px 20px;
   background-color: rgb(63,95,144);

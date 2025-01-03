@@ -47,11 +47,11 @@ const Advanced: React.FC = () => {
   const startRecording = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
+
     recognition.lang = 'zh-TW';
     recognition.continuous = true;
     recognition.interimResults = true;
-    
+
     let lastResult = '';  // 追蹤上一次的結果
 
     recognition.onresult = (event: any) => {
@@ -105,8 +105,8 @@ const Advanced: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if(selectedVoice == "") {
-        return alert("請選擇語音");
+    if (selectedVoice == "") {
+      return alert("請選擇語音");
     }
     const targetModel = options.find(
       (model) => model.show_name === selectedStyle
@@ -185,12 +185,12 @@ const Advanced: React.FC = () => {
 
   const formatRelationships = () => {
     return relationships
-    .filter(rel => rel.characterA && rel.characterB && rel.relation) 
-    .map(rel => ({
-      role1: rel.characterA,
-      role2: rel.characterB,
-      role12Relative: rel.relation
-    }));
+      .filter(rel => rel.characterA && rel.characterB && rel.relation)
+      .map(rel => ({
+        role1: rel.characterA,
+        role2: rel.characterB,
+        role12Relative: rel.relation
+      }));
   };
 
   return (
@@ -209,7 +209,13 @@ const Advanced: React.FC = () => {
       </div>
       <div className="header text-center py-3">
         <div className="header-content">WHISPER TALES</div>
-        <button onClick={() => navigate('/style')} className="login">
+        <button onClick={() => navigate('/bookmanage')} className="login">
+          書本管理
+        </button>
+        <button onClick={() => navigate('/voice')} className="login">
+          語音管理
+        </button>
+        <button onClick={() => navigate('/style')} className="login-in">
           返回故事生成
         </button>
       </div>
@@ -344,9 +350,8 @@ const Advanced: React.FC = () => {
                     >
                       <span>進階角色設定</span>
                       <span
-                        className={`accordion-icon ${
-                          isTemplateAccordionOpen ? "open" : ""
-                        }`}
+                        className={`accordion-icon ${isTemplateAccordionOpen ? "open" : ""
+                          }`}
                       >
                         ▼
                       </span>
@@ -355,7 +360,7 @@ const Advanced: React.FC = () => {
                   {isTemplateAccordionOpen && (
                     <div className="accordion-content">
                       <div className="relationship-setting d-flex flex-wrap align-items-center">
-                  
+
                       </div>
                       {relationships.map((rel, index) => (
                         <div key={index} className="relationship-setting d-flex flex-wrap align-items-center mb-2">
@@ -395,10 +400,10 @@ const Advanced: React.FC = () => {
                               {roleRelative.map((relation, i) => (
                                 <option key={i} value={relation}>{relation}</option>
                               ))}
-                            </select> 
+                            </select>
                             {index > 0 && (
-                              <button 
-                                className="btn btn-sm btn-link text-danger ms-1 p-0 d-flex align-items-center justify-content-center" 
+                              <button
+                                className="btn btn-sm btn-link text-danger ms-1 p-0 d-flex align-items-center justify-content-center"
                                 onClick={() => removeRelationship(index)}
                                 style={{ width: '20px', height: '20px' }}
                               >
@@ -408,8 +413,8 @@ const Advanced: React.FC = () => {
                           </div>
                         </div>
                       ))}
-                      <button 
-                        className="btn btn-sm btn-primary mt-2 d-flex align-items-center" 
+                      <button
+                        className="btn btn-sm btn-primary mt-2 d-flex align-items-center"
                         onClick={addRelationship}
                       >
                         <FontAwesomeIcon icon={faPlus} className="me-1" />
