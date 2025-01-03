@@ -435,7 +435,7 @@ const Advanced: React.FC = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="故事內容"
                   style={{
-                    height: "400px",
+                    height: "210px",
                     backgroundColor: "RGB(231, 232, 238)",
                   }}
                 />
