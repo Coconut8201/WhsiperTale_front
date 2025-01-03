@@ -395,18 +395,6 @@ const StartStory: React.FC = () => {
             ) : (
                 <p>No data available</p>
             )}
-            {!loading && zhuyinData && (
-                <div style={{ 
-                    position: 'fixed', 
-                    top: '10px', 
-                    right: '10px', 
-                    background: 'rgba(255,255,255,0.9)', 
-                    padding: '10px',
-                    border: '1px solid #ccc',
-                    zIndex: 1000
-                }}>
-                </div>
-            )}
         </div>
     );
 };
