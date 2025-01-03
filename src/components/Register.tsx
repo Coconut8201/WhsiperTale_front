@@ -11,6 +11,7 @@ const Register: React.FC = () => {
         e.preventDefault();
         const result = await userRegister(username, password);
         if (result.success) {
+            alert('註冊成功，將回到登入頁面');
             console.log(`使用者 ${username} 註冊成功`);
             navigate(`/login`);
         } else if(result.code == 401) {

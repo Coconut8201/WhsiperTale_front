@@ -15,6 +15,9 @@ const Login: React.FC = () => {
             console.log(`使用者 ${username} 登入成功`);
             navigate(`/style`);
         } else {
+            setUsername('');
+            setPassword('');
+            alert('登入失敗，請重新登入');
             console.log('登入失敗');
         }
     };
