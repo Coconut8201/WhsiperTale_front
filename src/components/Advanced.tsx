@@ -425,7 +425,7 @@ const Advanced: React.FC = () => {
             <div className="row align-items-start mb-4">
               <div className="col-md-3 d-flex align-items-end justify-content-end">
                 <label htmlFor="description" className="textarea-label">
-                  內 &nbsp; 容 :
+                  內 &emsp;&ensp; 容 :
                 </label>
               </div>
               <div className="col-md-9 d-flex align-items-end">
