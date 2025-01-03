@@ -19,27 +19,36 @@ const pdf_styles = StyleSheet.create({
     page: {
         flexDirection: 'row',
         backgroundColor: '#FFFFFF',
-        padding: 20,
+        padding: 0,
     },
-    halfPage: {
-        width: '50%',
-        alignItems: 'center',
+    fullPage: {
+        width: '100%',
+        height: '100%',
+        position: 'relative',
     },
     storyImage: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+    },
+    textOverlay: {
+        position: 'absolute',
+        bottom: 40,
+        left: '10%',
         width: '80%',
-        marginBottom: 10,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        padding: 20,
+        borderRadius: 8,
     },
     storyText: {
-        fontSize: 12,
+        fontSize: 16,
         textAlign: 'left',
-        width: '80%',
         fontFamily: 'Noto Sans TC',
-        lineHeight: 1.2,
-        marginTop: 10,
+        lineHeight: 1.5,
     },
     rubyText: {
         fontFamily: 'Bopomofo Ruby',
-        fontSize: 8,
+        fontSize: 10,
     }
 });
 
@@ -200,37 +209,37 @@ const StartStory: React.FC = () => {
 
     const PDFDocument: React.FC<{ data: storyInterface; storyLines: string[] }> = ({ data, storyLines }) => (
         <Document>
-            {data && data.image_base64 && data.image_base64.length > 0 &&
-                data.image_base64.map((image, index) => {
-                    if (index % 2 === 0) {
-                        return (
-                            <Page key={index} size="A4" orientation="landscape" style={pdf_styles.page}>
-                                <View style={pdf_styles.halfPage}>
-                                    <Image
-                                        src={`data:image/png;base64,${image}`}
-                                        style={pdf_styles.storyImage}
-                                    />
-                                    <Text style={pdf_styles.storyText}>
-                                        {formatText(storyLines[index] || '', index)}
-                                    </Text>
-                                </View>
-                                {data.image_base64 && data.image_base64[index + 1] && (
-                                    <View style={pdf_styles.halfPage}>
-                                        <Image
-                                            src={`data:image/png;base64,${data.image_base64[index + 1]}`}
-                                            style={pdf_styles.storyImage}
-                                        />
-                                        <Text style={pdf_styles.storyText}>
-                                            {formatText(storyLines[index + 1] || '', index)}
-                                        </Text>
-                                    </View>
-                                )}
-                            </Page>
-                        );
-                    }
-                    return null;
-                })
-            }
+            <Page size="A4" orientation="landscape" style={pdf_styles.page}>
+                <View style={pdf_styles.fullPage}>
+                    {data?.image_base64 && (
+                        <Image
+                            src={`data:image/png;base64,${data.image_base64[0]}`}
+                            style={pdf_styles.storyImage}
+                        />
+                    )}
+                    <View style={pdf_styles.textOverlay}>
+                        <Text style={pdf_styles.storyText}>
+                            {storyLines[0] || ''}
+                        </Text>
+                    </View>
+                </View>
+            </Page>
+
+            {data?.image_base64?.slice(1).map((image, index) => (
+                <Page key={index + 1} size="A4" orientation="landscape" style={pdf_styles.page}>
+                    <View style={pdf_styles.fullPage}>
+                        <Image
+                            src={`data:image/png;base64,${image}`}
+                            style={pdf_styles.storyImage}
+                        />
+                        <View style={pdf_styles.textOverlay}>
+                            <Text style={pdf_styles.storyText}>
+                                {storyLines[index + 1] || ''}
+                            </Text>
+                        </View>
+                    </View>
+                </Page>
+            ))}
         </Document>
     );
 
