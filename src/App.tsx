@@ -15,6 +15,7 @@ import PdfTest from "./components/PdfTest";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import BookManage from "./components/BookManage";
+import Test from "./components/Test";
 
 function App() {
   return (
@@ -53,6 +54,8 @@ function App() {
             <Route path='faq' element={<Faq />}></Route>
             {/* {http://localhost:3151/about_us} */}
             <Route path='about_us' element={<AboutUs />}></Route>
+            {/* {http://localhost:3151/test} */}
+            <Route path='test' element={<Test />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
