@@ -66,12 +66,16 @@ export default function Creating() {
                     <div className="header-content">
                         WisperTales
                     </div>
-                    <button onClick={() => navigate('/bookmanage')} className="login">
-                        書本管理
-                    </button>
-                    <button onClick={() => navigate('/voice')} className="login">
-                        語音管理
-                    </button>
+                    {isLogin && (
+                        <>
+                            <button onClick={() => navigate('/bookmanage')} className="login">
+                                書本管理
+                            </button>
+                            <button onClick={() => navigate('/voice')} className="login">
+                                語音管理
+                            </button>
+                        </>
+                    )}
                     <button onClick={() => navigate('/login')} className="login">
                         { isLogin ? "已登入" : "未登入" }
                     </button>
