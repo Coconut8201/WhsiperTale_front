@@ -9,6 +9,7 @@ export default function Voice() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [audioName, setAudioName] = useState<string>("model_name");
+  const [isLoading, setIsLoading] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
   const audioChunksRef = useRef<BlobPart[]>([]);
@@ -72,6 +73,7 @@ export default function Voice() {
     }
     if (audioBlob) {
       try {
+        setIsLoading(true);
         await UploadVoice(audioBlob, audioName);
         alert('音檔上傳成功');
         if (audioUrl) {
@@ -81,6 +83,8 @@ export default function Voice() {
       } catch (error) {
         console.error('上傳音檔時發生錯誤:', error);
         alert('音檔上傳失敗。請稍後再試。');
+      } finally {
+        setIsLoading(false);
       }
     } else {
       alert('未上傳任何音檔');
@@ -147,14 +151,35 @@ export default function Voice() {
               <button
                 type="submit"
                 className="button-Previous-Next-Page"
-                disabled={!audioBlob}
+                disabled={!audioBlob || isLoading}
               >
-                送出
+                {isLoading ? '上傳中...' : '送出'}
               </button>
             </div>
           </form>
         </div>
       </div>
+      {isLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            color: 'white',
+            fontSize: '1.2rem'
+          }}>
+            正在上傳音檔，請稍候...
+          </div>
+        </div>
+      )}
     </div>
   );
 }
