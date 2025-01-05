@@ -14,6 +14,8 @@ export default function Voice() {
   const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
   const audioChunksRef = useRef<BlobPart[]>([]);
   const navigate = useNavigate();
+  const [recordingTime, setRecordingTime] = useState(0);
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const fetchVoiceList = async () => {
@@ -33,6 +35,11 @@ export default function Voice() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
+
+      setRecordingTime(0);
+      timerRef.current = window.setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
 
       mediaRecorder.ondataavailable = (event) => {
         audioChunksRef.current.push(event.data);
@@ -58,6 +65,10 @@ export default function Voice() {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     }
   };
 
@@ -141,6 +152,24 @@ export default function Voice() {
               結束錄製
             </button>
           </div>
+          {isRecording && (
+            <div style={{
+              color: 'red',
+              marginTop: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <div style={{
+                width: '10px',
+                height: '10px',
+                backgroundColor: 'red',
+                borderRadius: '50%',
+                animation: 'pulse 1s infinite'
+              }}></div>
+              正在錄音中... {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}
+            </div>
+          )}
           {audioUrl && <audio src={audioUrl} controls />}
           <form onSubmit={handleSubmit}>
             <p className="example-title">範例文本</p>
