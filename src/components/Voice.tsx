@@ -78,10 +78,17 @@ export default function Voice() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (isRecording) {
+      stopRecording();
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
     if (voiceOptions.includes(audioName)) {
       alert('模型名稱已存在');
       return;
     }
+    
     if (audioBlob) {
       try {
         setIsLoading(true);
