@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo, forwardRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { StartStory_api, GetVoice, makeZhuyin } from '../utils/tools/fetch';
+import { StartStory_api, GetVoice, makeZhuyin, verifyStoryOwnership } from '../utils/tools/fetch';
 import '../styles/StartStory.css';
 import { pdf, Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import HTMLFlipBook from "react-pageflip";
@@ -264,6 +264,16 @@ const StartStory: React.FC = () => {
             </div>
         );
     };
+    useEffect(() => {
+        if (storyId) {
+            verifyStoryOwnership(storyId).then(res => {
+                if (!res.success) {
+                    alert('您沒有權限查看此故事');
+                    navigate('/style');
+                }
+            });
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {

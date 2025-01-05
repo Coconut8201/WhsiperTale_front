@@ -334,3 +334,24 @@ export async function getBookList(): Promise<any> {
         return;
     }
 }
+
+export async function verifyStoryOwnership(storyId: string): Promise<{ success: boolean }> {
+    try {
+        const response = await fetch(`${apis.verifyStoryOwnership}?storyId=${storyId}`, {
+            method: 'GET',
+            credentials: 'include',  // 添加認證信息
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const responseData: { success: boolean, message: string } = await response.json();
+        if (!response.ok || !responseData.success) {
+            return { success: false };
+        }
+        return { success: true };
+    } catch (error) {
+        console.error('verifyStoryOwnership fail: ', error);
+        return { success: false };
+    }
+}
