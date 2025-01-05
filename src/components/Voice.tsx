@@ -87,10 +87,10 @@ export default function Voice() {
         setIsLoading(true);
         await UploadVoice(audioBlob, audioName);
         alert('音檔上傳成功');
-        if (audioUrl) {
-          URL.revokeObjectURL(audioUrl);
-          setAudioUrl(null);
-        }
+        // if (audioUrl) {
+        //   URL.revokeObjectURL(audioUrl);
+        //   setAudioUrl(null);
+        // }
       } catch (error) {
         console.error('上傳音檔時發生錯誤:', error);
         alert('音檔上傳失敗。請稍後再試。');
