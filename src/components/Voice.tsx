@@ -73,7 +73,8 @@ export default function Voice() {
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAudioName(e.target.value);
+    const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '');
+    setAudioName(value);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -138,6 +139,7 @@ export default function Voice() {
               value={audioName}
               onChange={handleInputChange}
               style={{ height: '2.2rem', padding: '0.25rem 0.5rem' }}
+              placeholder="請輸入英文"
             />
           </div>
           <div className='buttonspace'>
