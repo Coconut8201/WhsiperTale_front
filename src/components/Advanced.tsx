@@ -105,6 +105,10 @@ const Advanced: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if (!description.trim()) {
+      alert("請輸入故事內容");
+      return;
+    }
     if (selectedVoice == "") {
       return alert("請選擇語音");
     }
@@ -438,10 +442,12 @@ const Advanced: React.FC = () => {
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="故事內容"
+                  placeholder="故事內容(必填)"
+                  required
                   style={{
                     height: "210px",
                     backgroundColor: "RGB(231, 232, 238)",
+                    border: description ? "1px solid #ced4da" : "1px solid #dc3545"
                   }}
                 />
                 <button
