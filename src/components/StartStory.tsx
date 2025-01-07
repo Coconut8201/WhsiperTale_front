@@ -134,7 +134,7 @@ const StartStory: React.FC = () => {
                 zhuyinResults = zhuyinResults.map(result => {
                     if (Array.isArray(result)) {
                         return result.flatMap(char => {
-                            const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
+                            const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF0-9０-９一二三四五六七八九]/;
                             if (chinesePunctuationRegex.test(char[0])) {
                                 return Array(char[0].length).fill([]);
                             }
@@ -173,7 +173,7 @@ const StartStory: React.FC = () => {
 
         const combinedElements = text.split('').map((char, i) => {
             let charIndex = i;
-            const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF]/;
+            const chinesePunctuationRegex = /[。，、；：？！…—·「」『』（）《》〈〉【】〔〕\u3000-\u303F\uFF00-\uFFEF0-9０-９一二三四五六七八九]/;
             const isPunctuation = chinesePunctuationRegex.test(char);
 
             const zhuyin = isPunctuation ? '' : (zhuyinArray[charIndex]?.join('') || '');
