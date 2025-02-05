@@ -6,9 +6,9 @@ import "../styles/Advanced.css";
 import { roleRelative } from "../utils/tools/roleRelateList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faMicrophone, faStop } from '@fortawesome/free-solid-svg-icons';
-const options: sdmodel[] = sdmodel_list;
+import { bookType } from "../utils/bookType";
 
-// 添加類型定義
+const options: sdmodel[] = sdmodel_list;
 declare global {
   interface Window {
     webkitSpeechRecognition: any;
@@ -31,13 +31,15 @@ const Advanced: React.FC = () => {
   const [characters, setCharacters] = useState<string[]>([""]);
   const [storyId, setStoryId] = useState<string>("66a52f72b5993b79132a3fac");
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
-  const [isLoad, setIsLoad] = useState<string>("");         // 是否在生成圖片
-  const [reLoad, setReLoad] = useState<boolean>(false);     // 重新生成圖片控制器
+  const [isLoad, setIsLoad] = useState<string>("");
+  const [reLoad, setReLoad] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>(
     "src/images/StorybookRedmond.png"
   );
   const [voiceOptions, setVoiceOptions] = useState<string[]>([]);
+  const [bookTypeOptions, setBookTypeOptions] = useState<string[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>("");
+  const [selectedBookType, setSelectedBookType] = useState<string>("");
   const [isTemplateAccordionOpen, setIsTemplateAccordionOpen] =
     useState<boolean>(false);
   const [relationships, setRelationships] = useState([{ characterA: '', characterB: '', relation: '' }]);
@@ -109,9 +111,14 @@ const Advanced: React.FC = () => {
       alert("請輸入故事內容");
       return;
     }
-    // if (selectedVoice == "") {
-    //   return alert("請選擇語音");
-    // }
+    if (!selectedVoice) {
+      alert("請選擇語音");
+      return;
+    }
+    if (!selectedBookType) {
+      alert("請選擇繪本種類");
+      return;
+    }
     const targetModel = options.find(
       (model) => model.show_name === selectedStyle
     );
@@ -119,6 +126,7 @@ const Advanced: React.FC = () => {
     const formattedRelationship = formatRelationships();
     const data = {
       style: targetModel?.sd_name || "fantasyWorld_v10.safetensors",
+      bookType: selectedBookType,
       mainCharacter: character1,
       description,
       otherCharacters: characters.filter((character) => character !== ""),
@@ -159,6 +167,7 @@ const Advanced: React.FC = () => {
   }, [selectedStyle]);
 
   useEffect(() => {
+    setBookTypeOptions(bookType);
     const fetchVoiceList = async () => {
       const result = await getVoiceList();
       console.log(`語音列表結果:`, result);
@@ -226,6 +235,7 @@ const Advanced: React.FC = () => {
       <div className="content-container">
         <div className="form-section">
           <div className="form-content">
+            {/* 語音與下拉式選單 */}
             <div className="row align-items-center mb-4">
               <div className="col-md-3 d-flex align-items-center justify-content-end">
                 <label htmlFor="voice" className="label-spacing">
@@ -245,6 +255,31 @@ const Advanced: React.FC = () => {
                   {voiceOptions.map((voice, index) => (
                     <option key={index} value={voice}>
                       {voice}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>           
+            {/* 繪本分類 */}
+            <div className="row align-items-center mb-4">
+              <div className="col-md-3 d-flex align-items-center justify-content-end">
+                <label htmlFor="voice" className="label-spacing">
+                  繪本種類：
+                </label>
+              </div>
+              <div className="col-md-9">
+                <select
+                  id="voice"
+                  className="form-select"
+                  value={selectedBookType}
+                  onChange={(e) => setSelectedBookType(e.target.value)}
+                >
+                  <option key="default" value="">
+                    請選擇繪本種類
+                  </option>
+                  {bookTypeOptions.map((bookType, index) => (
+                    <option key={index} value={bookType}>
+                      {bookType}
                     </option>
                   ))}
                 </select>
