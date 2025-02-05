@@ -109,9 +109,9 @@ const Advanced: React.FC = () => {
       alert("請輸入故事內容");
       return;
     }
-    if (selectedVoice == "") {
-      return alert("請選擇語音");
-    }
+    // if (selectedVoice == "") {
+    //   return alert("請選擇語音");
+    // }
     const targetModel = options.find(
       (model) => model.show_name === selectedStyle
     );

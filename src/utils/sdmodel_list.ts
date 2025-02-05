@@ -16,9 +16,9 @@ export const sdmodel_list: sdmodel[] = [
     { sd_name: "zbaseHighQualityAesthetic_sdxlV30.safetensors", show_name: "奇幻卡通風格", image_path: illustriousStorybook, sdModelId: "illustriousStorybook"},  
     { sd_name: "realisticVisionV60B1_v51HyperVAE.safetensors [f47e942ad4]", show_name: "寫實風格", image_path: realisticVision, sdModelId: "realisticVision"},
     { sd_name: "AnythingV5V3_v5PrtRE.safetensors", show_name: "可愛卡通風格", image_path: jIll, sdModelId: "jIll"},
-    { sd_name: "sdXL_v10VAEFix.safetensors [e6bb9ea85b]", show_name: "卡通繪本風格", image_path: storybookRedmond, sdModelId: "storybookRedmond"}, 
+    { sd_name: "SD XL v1.0 VAE Fix.safetensors [e6bb9ea85b]", show_name: "卡通繪本風格", image_path: storybookRedmond, sdModelId: "storybookRedmond"}, 
     { sd_name: "sdxlUnstableDiffusers_v11Rundiffusion.safetensors [dda8c0514c]", show_name: "手繪風格", image_path: storybookIllustration, sdModelId: "storybookIllustration"},
-    { sd_name: "sdXL_v10VAEFix.safetensors [e6bb9ea85b]", show_name: "立體卡通風格", image_path: cartoon3d, sdModelId: "cartoon3d"},
+    { sd_name: "SD XL v1.0 VAE Fix.safetensors [e6bb9ea85b]", show_name: "立體卡通風格", image_path: cartoon3d, sdModelId: "cartoon3d"},
 ]
 
 export interface bookManageList {

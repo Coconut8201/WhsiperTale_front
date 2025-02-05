@@ -4,6 +4,7 @@ import { StartStory_api, GetVoice, makeZhuyin, verifyStoryOwnership } from '../u
 import '../styles/StartStory.css';
 import { pdf, Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import HTMLFlipBook from "react-pageflip";
+import JSZip from 'jszip';
 
 Font.register({
     family: "Noto Sans TC",
@@ -258,9 +259,69 @@ const StartStory: React.FC = () => {
             }
         };
 
+        const downloadImagesAndText = async () => {
+            try {
+                if (!data || !data.image_base64 || !storyLines.length) return;
+
+                const zip = new JSZip();
+                const folder = zip.folder(storyLines[0] || 'story');
+
+                // 使用與 downloadSingleImage 相同的邏輯處理圖片
+                const processImage = (base64String: string) => {
+                    const byteCharacters = atob(base64String);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    return new Uint8Array(byteNumbers);
+                };
+
+                // 下載首頁圖片
+                if (data.image_base64[0]) {
+                    const imageData = processImage(data.image_base64[0]);
+                    folder?.file('page_1.png', imageData, { binary: true });
+                }
+
+                // 下載其餘頁面的圖片
+                data.image_base64.slice(1).forEach((image, index) => {
+                    if (image) {
+                        const imageData = processImage(image);
+                        folder?.file(`page_${index + 2}.png`, imageData, { binary: true });
+                    }
+                });
+
+                // 加入文字內容
+                folder?.file('storyText.txt', storyLines.join('\n\n'));
+
+                // 產生並下載壓縮檔
+                const content = await zip.generateAsync({ 
+                    type: 'blob',
+                    compression: 'DEFLATE',
+                    compressionOptions: { level: 6 }
+                });
+
+                // 下載檔案
+                const url = URL.createObjectURL(content);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${storyLines[0] || 'story'}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error('Error downloading images and text:', error);
+                alert('下載過程中發生錯誤，請稍後再試');
+            }
+        };
+
         return (
             <div className="download-container">
                 <button className='button-Previous-Next-Page' onClick={generatePDF}>下載pdf檔案</button>
+                <button className='button-Previous-Next-Page' onClick={downloadImagesAndText} style={{ marginLeft: '10px' }}>
+                    下載圖片與文字壓縮檔
+                </button>
             </div>
         );
     };
