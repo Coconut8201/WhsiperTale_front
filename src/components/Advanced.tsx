@@ -111,10 +111,10 @@ const Advanced: React.FC = () => {
       alert("請輸入故事內容");
       return;
     }
-    if (!selectedVoice) {
-      alert("請選擇語音");
-      return;
-    }
+    // if (!selectedVoice) {
+    //   alert("請選擇語音");
+    //   return;
+    // }
     if (!selectedBookType) {
       alert("請選擇繪本種類");
       return;
